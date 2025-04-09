@@ -1,0 +1,25 @@
+{
+  "type": "POSTGRESQL",
+  "label": "POSTGRESQL",
+  "name": "postgres_Test",
+  "note": "",
+  "host": "192.168.0.208",
+  "port": 5432,
+  "principal": "",
+  "javaSecurityKrb5Conf": "",
+  "loginUserKeytabUsername": "",
+  "loginUserKeytabPath": "",
+  "mode": "",
+  "userName": "postgres",
+  "password": "hhu2023",
+  "database": "datax",
+  "connectType": "",
+  "other": {
+    "currentSchema": "test"
+  },
+  "endpoint": "",
+  "MSIClientId": "",
+  "dbUser": "",
+  "datawarehouse": "",
+  "id": 2
+}

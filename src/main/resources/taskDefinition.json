@@ -1,0 +1,59 @@
+[
+  {
+    "code": 11849733183072,
+    "delayTime": "0",
+    "description": "",
+    "environmentCode": -1,
+    "failRetryInterval": "1",
+    "failRetryTimes": "0",
+    "flag": "YES",
+    "isCache": "NO",
+    "name": "22",
+    "taskParams": {
+      "localParams": [],
+      "rawScript": "echo \"\"",
+      "resourceList": []
+    },
+    "taskPriority": "MEDIUM",
+    "taskType": "SHELL",
+    "timeout": 0,
+    "timeoutFlag": "CLOSE",
+    "timeoutNotifyStrategy": "",
+    "workerGroup": "default",
+    "cpuQuota": -1,
+    "memoryMax": -1,
+    "taskExecuteType": "BATCH"
+  },
+  {
+    "code": 11849755589472,
+    "delayTime": "0",
+    "description": "",
+    "environmentCode": -1,
+    "failRetryInterval": "1",
+    "failRetryTimes": "0",
+    "flag": "YES",
+    "isCache": "NO",
+    "name": "666sql",
+    "taskParams": {
+      "localParams": [],
+      "resourceList": [],
+      "type": "MYSQL",
+      "datasource": 1,
+      "sql": "select * from tb_sys_user",
+      "sqlType": "0",
+      "preStatements": [],
+      "postStatements": [],
+      "sendEmail": false,
+      "displayRows": 100
+    },
+    "taskPriority": "MEDIUM",
+    "taskType": "SQL",
+    "timeout": 0,
+    "timeoutFlag": "CLOSE",
+    "timeoutNotifyStrategy": "",
+    "workerGroup": "default",
+    "cpuQuota": -1,
+    "memoryMax": -1,
+    "taskExecuteType": "BATCH"
+  }
+]

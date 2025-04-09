@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: iot
+  profiles:
+    active: dev
+springdoc:
+  swagger-ui: /sss
+  packagesToScan: com.wims.iot.controller
+  paths-to-match: /*
+
+
+server:
+  port: 9000  #端口号
+  servlet:
+    context-path: /iot  #项目名称
+
+knife4j:
+  enable: true  #开启knife4j增强
+
+#写入数据库在多长时间范围(min)内保存为同一条数据
+Insert:
+  Interval: 3

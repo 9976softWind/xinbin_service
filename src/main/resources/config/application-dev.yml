@@ -1,0 +1,131 @@
+spring:
+  jackson:
+    ## 默认序列化时间格式
+    date-format: yyyy-MM-dd HH:mm:ss
+    ## 默认序列化时区
+    time-zone: GMT+8
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/xinbin_card?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&autoReconnect=true&allowMultiQueries=true
+    username: root
+    password: hhubrain
+  redis:
+    host: 192.168.0.210
+    port: 6379
+    password: 123456
+    database: 10
+    jedis:
+      pool:
+        max-active: 8 #连接池最大连接数（使用负值表示没有限制）（默认值）
+        max-wait: -1ms #连接池最大阻塞等待时间（使用负值表示没有限制）（默认值）
+        max-idle: 8 #连接池中的最大空闲连接（默认值）
+        min-idle: 0 #连接池中的最小空闲连接（默认值）
+      timeout: 10000ms #连接超时时间（毫秒）
+      database: 10 #数据位置（可从redis desktop manager中查看，默认就是0）
+      servlet:
+        multipart:
+          max-file-size: -1
+          max-request-size: -1
+mybatis-plus:
+  global-config:
+    db-config:
+      # 主键ID类型
+      id-type: none
+      # 逻辑删除字段名称
+      logic-delete-field: deleted
+      # 逻辑删除-删除值
+      logic-delete-value: 1
+      # 逻辑删除-未删除值
+      logic-not-delete-value: 0
+  configuration:
+    # 驼峰下划线转换
+    map-underscore-to-camel-case: true
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+# 认证配置
+jwt:
+  # 签署密钥
+  secret-key: SecretKey012345678901234567890123456789012345678901234567890123456789
+  # token 过期时间(单位:秒)
+  expiration: 7200
+
+oss:
+  # OSS 类型 (目前支持aliyun、minio)
+  type: minio
+  # MinIO 对象存储服务
+  minio:
+    # 服务Endpoint
+    endpoint: http://localhost:9000
+    # 访问凭据
+    access-key: minioadmin
+    # 凭据密钥
+    secret-key: minioadmin
+    # 存储桶名称
+    bucket-name: default
+    # (可选)自定义域名，如果配置了域名，生成的文件URL是域名格式，未配置则URL则是IP格式 (eg: https://oss.youlai.tech)
+    custom-domain:
+  # 阿里云OSS对象存储服务
+  aliyun:
+    # 服务Endpoint
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    # 访问凭据
+    access-key-id: your-access-key-id
+    # 凭据密钥
+    access-key-secret: your-access-key-secret
+    # 存储桶名称
+    bucket-name: default
+
+# springdoc配置： https://springdoc.org/properties.html
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: alpha
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.wims.iot.controller
+  default-flat-param-object: true
+
+# knife4j的增强配置，不需要增强可以不配 https://doc.xiaominfo.com/docs/quick-start
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# xxl-job 定时任务配置
+xxl:
+  job:
+    admin:
+      # 多个地址使用,分割
+      addresses: http://127.0.0.1:8080/xxl-job-admin
+    accessToken: default_token
+    executor:
+      appname: xxl-job-executor-${spring.application.name}
+      address:
+      ip:
+      port: 9999
+      logpath: /data/applogs/xxl-job/jobhandler
+      logretentiondays: 30
+
+# 系统配置
+system:
+  config:
+    # 数据权限开关
+    data-permission-enabled: true
+    # 定时任务 xxl-job 开关
+    xxl-job-enabled: false
+    # WebSocket 开关
+    websocket-enabled: true
+
+security:
+  jwt:
+    secretKey: whatever #JWT加解密使用的密钥
+    tokenHeader: Authorization #JWT存储的请求头
+    expiration: 86400 #JWT的超期限时间(60*60*24)秒
+    tokenHead: 'Bearer ' #JWT负载中拿到开头

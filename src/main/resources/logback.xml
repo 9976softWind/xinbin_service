@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 读取spring.application.name中的属性来生成日志文件名 -->
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
+    <property name="filepath" value="${user.home}/${APP_NAME}"/>
+
+    <!--<property name="CONSOLE_LOG_PATTERN" value="%date{HH:mm:ss.SSS}  [%thread]  %-5level%logger{36}  -  %msg%n"/>-->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%thread] %highlight(%-5level) %green(%logger{50}) -%line - %highlight(%msg) %n"/>
+    <property name="PLAT_LOG_FILE" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID} [%16.16t] %-40.40logger{39} -%line : %msg%n"/>
+    <property name="FILE_PATH" value="${filepath}/iotLogs/plat%d{yyyy-MM-dd}.%i.log"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 按照上面配置的LOG_PATTERN来打印日志 -->
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--  按照上面配置的FILE_PATH路径来保存日志  -->
+            <fileNamePattern>${FILE_PATH}</fileNamePattern>
+            <!--  日志保存15天  -->
+            <maxHistory>15</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!--  单个日志文件的最大，超过则新建日志文件存储  -->
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <!--  按照上面配置的LOG_PATTERN来打印日志  -->
+            <pattern>${PLAT_LOG_FILE}</pattern>
+        </encoder>
+    </appender>
+
+
+
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <!-- 日志输出级别 -->
+    <logger name="com.wims.plat" level="info"/>
+</configuration>
+
