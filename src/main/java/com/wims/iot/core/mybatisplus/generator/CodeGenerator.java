@@ -17,9 +17,10 @@ import java.util.*;
 public class CodeGenerator {
 
     public static void main(String[] args) {
-        String password = "hjlc";
-        String username = "hjlc20230326";
-        String url = "jdbc:mysql://192.168.0.210:3306/youlai_boot?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai";
+        String username = "root";
+        String password = "hhubrain";
+
+        String url = "jdbc:mysql://localhost:3306/xinbin_card?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai";
         DataSourceConfig.Builder dataSourceConfig = new DataSourceConfig.Builder(url, username, password);
 
         //String finalProjectPath = System.getProperty("user.dir"); //当前项目根目录
@@ -29,10 +30,10 @@ public class CodeGenerator {
         List<String> tableList = new ArrayList<>();
 //        tableList.add("t_ds_process_definition");    // 生成全部table注释add掉就好
         // 写死
-        creteModel(dataSourceConfig, finalProjectPath, Boolean.TRUE, tableList);
+//        creteModel(dataSourceConfig, finalProjectPath, Boolean.TRUE, tableList);
 
         // 手动输入（互动式）
-//        createSingleModel(dataSourceConfig,finalProjectPath);
+        createSingleModel(dataSourceConfig,finalProjectPath);
     }
 
     private static void creteModel(DataSourceConfig.Builder dataSourceConfig,
@@ -122,14 +123,18 @@ public class CodeGenerator {
                                 .outputDir(finalProjectPath + "/src/main/java"))
                 // 包配置
                 .packageConfig(builder -> {
-                    builder.parent("com.yeye") // 设置父包名
-                            .entity("model") //设置entity包名
-                            .other("dao") // 设置dto包名
+                    builder.parent("com.wims.iot") // 设置父包名
+                            .entity("model.entity") //设置entity包名
+                            .mapper("mapper")
+                            .service("service")
+                            .serviceImpl("service.impl")
+                            .other("other")
                             .pathInfo(Collections.singletonMap(OutputFile.xml, finalProjectPath + "/src/main/resources/mapper")); // 设置mapperXml生成路径
 
                 })
                 // 策略配置
                 .strategyConfig((scanner, builder) -> builder.addInclude(getTables(scanner.apply("请输入表名，多个英文逗号分隔？所有输入 all")))
+                        .addTablePrefix("t_")
                         .controllerBuilder().enableRestStyle()
                         .entityBuilder().enableLombok()
                         .mapperBuilder().enableBaseResultMap().enableBaseColumnList()
