@@ -54,7 +54,7 @@ public class File implements Serializable {
     /**
      * 文件大小
      */
-    private Integer fileSize;
+    private Long fileSize;
 
     /**
      * 所属目录（引用t_cata的主键Id）

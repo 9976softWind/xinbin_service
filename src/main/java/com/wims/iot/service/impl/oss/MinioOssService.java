@@ -81,7 +81,8 @@ public class MinioOssService implements OssService {
      */
     @Override
     public FileInfo uploadFile(MultipartFile file) {
-
+        String realName = file.getOriginalFilename();
+        long fileSize = file.getSize();
         // 生成文件名(日期文件夹)
         String suffix = FileUtil.getSuffix(file.getOriginalFilename());
         String uuid = IdUtil.simpleUUID();
@@ -114,6 +115,8 @@ public class MinioOssService implements OssService {
             FileInfo fileInfo = new FileInfo();
             fileInfo.setName(fileName);
             fileInfo.setUrl(fileUrl);
+            fileInfo.setRealName(realName);
+            fileInfo.setFileSize(fileSize);
             return fileInfo;
         } catch (Exception e) {
             throw new RuntimeException("文件上传失败");

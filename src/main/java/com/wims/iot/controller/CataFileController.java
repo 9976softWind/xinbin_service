@@ -9,6 +9,7 @@ import com.wims.iot.model.query.FilePageQuery;
 import com.wims.iot.service.IFileService;
 import com.wims.iot.service.OssService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,12 +53,22 @@ public class CataFileController {
 
     @Operation(summary = "上传文件")
     @PostMapping
-    public Result<List<FileInfo>> uploadMultiFile(
+    public Result<Integer> uploadMultiFile(
             @RequestParam(value = "cataId") String cataId,
              @RequestParam(value = "files") List<MultipartFile> files
     ) {
         List<FileInfo> fileInfos = ossService.uploadMultiFile(files);
-        return Result.success(fileInfos);
+        Integer result = iFileService.insertMany(Integer.parseInt(cataId), fileInfos);
+        return Result.success(result);
+    }
+
+    @Operation(summary = "删除文件")
+    @DeleteMapping("/{idsStr}")
+    public Result deleteFiles(
+            @Parameter(description = "文件ID，多个以英文逗号(,)分割") @PathVariable String idsStr
+    ) {
+        iFileService.deleteFiles(idsStr);
+        return Result.success();
     }
 
 }
