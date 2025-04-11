@@ -10,7 +10,7 @@ springdoc:
 
 
 server:
-  port: 9000  #端口号
+  port: 19000  #端口号
   servlet:
     context-path: /iot  #项目名称
 

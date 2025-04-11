@@ -58,13 +58,13 @@ oss:
   # MinIO 对象存储服务
   minio:
     # 服务Endpoint
-    endpoint: http://localhost:9000
+    endpoint: http://127.0.0.1:9000
     # 访问凭据
     access-key: minioadmin
     # 凭据密钥
     secret-key: minioadmin
     # 存储桶名称
-    bucket-name: default
+    bucket-name: bank
     # (可选)自定义域名，如果配置了域名，生成的文件URL是域名格式，未配置则URL则是IP格式 (eg: https://oss.youlai.tech)
     custom-domain:
   # 阿里云OSS对象存储服务

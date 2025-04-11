@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Aliyun 对象存储服务类
@@ -94,5 +95,10 @@ public class AliyunOssService implements OssService {
         String fileName = filePath.substring(fileHost.length() + 1); // +1 是/占一个字符，截断左闭右开
         aliyunOssClient.deleteObject(bucketName, fileName);
         return true;
+    }
+
+    @Override
+    public List<FileInfo> uploadMultiFile(List<MultipartFile> files) {
+        return null;
     }
 }

@@ -20,4 +20,19 @@
         id, file_id, file_name, file_path, file_type, file_size, cata_id, create_time, update_time
     </sql>
 
+    <select id="getFilePage" resultMap="BaseResultMap">
+        select
+            f.id, f.file_id, f.file_name, f.file_path, f.file_type, f.file_size, f.cata_id, f.create_time, f.update_time
+        from
+            t_file f
+                LEFT JOIN t_cata c ON f.cata_id = c.id
+        <where>
+            <if test="filePageQuery.fileName !=null">
+                and file_name like CONCAT('%',#{filePageQuery.fileName},'%')
+            </if>
+            <if test='filePageQuery.cataId!=null'>
+                AND concat(',',concat(c.tree_path,',',c.id),',') like concat('%,',#{filePageQuery.cataId},',%')
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * MinIO 文件上传服务类
@@ -150,6 +152,15 @@ public class MinioOssService implements OssService {
                  XmlParserException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<FileInfo> uploadMultiFile(List<MultipartFile> files) {
+        List<FileInfo> result = new ArrayList<>();
+        files.forEach(file->{
+            result.add(this.uploadFile(file));
+        });
+        return result;
     }
 
 

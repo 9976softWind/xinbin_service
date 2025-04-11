@@ -1,7 +1,9 @@
 package com.wims.iot.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wims.iot.model.entity.File;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wims.iot.model.query.FilePageQuery;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IFileService extends IService<File> {
 
+    IPage<File> getFilePage(FilePageQuery filePageQuery);
 }

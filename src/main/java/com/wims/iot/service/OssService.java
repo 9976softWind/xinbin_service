@@ -3,6 +3,8 @@ package com.wims.iot.service;
 import com.wims.iot.model.dto.FileInfo;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * 对象存储服务接口层
  *
@@ -27,4 +29,5 @@ public interface OssService {
     boolean deleteFile(String filePath);
 
 
+    List<FileInfo> uploadMultiFile(List<MultipartFile> files);
 }
