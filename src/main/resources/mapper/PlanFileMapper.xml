@@ -18,9 +18,71 @@
         <result column="updated_at" property="updatedAt" />
     </resultMap>
 
+    <resultMap id="PlanCategoryResultMap" type="com.wims.iot.model.vo.PlanCategoryVo">
+        <!-- 主表 t_plan_category 字段映射 -->
+        <id property="id" column="tpc_id"/>
+        <result property="name" column="tpc_name"/>
+        <result property="description" column="tpc_description"/>
+        <result property="createAt" column="tpc_create_at"/>
+        <result property="updateAt" column="tpc_update_at"/>
+        <collection property="fields" ofType="com.wims.iot.model.entity.PlanField">
+            <id column="tpf_id" property="id" />
+            <result column="tpf_field_id" property="fieldId" />
+            <result column="tpf_category_id" property="categoryId" />
+            <result column="tpf_name" property="name" />
+            <result column="tpf_label" property="label" />
+            <result column="tpf_type" property="type" />
+            <result column="tpf_required" property="required" />
+            <result column="tpf_options" property="options" />
+            <result column="tpf_sort" property="sort" />
+            <result column="tpf_description" property="description" />
+            <result column="tpf_created_at" property="createdAt" />
+        </collection>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, name, file_id, directory_id, description, preplan_priority, disaster_type, applicable_area, entity_category_id, entity_category_property, created_at, updated_at
     </sql>
 
+    <!-- 查询语句 -->
+    <select id="getPlanFileCategoryInfo" resultMap="PlanCategoryResultMap">
+        SELECT
+            tpc.id          AS tpc_id,
+            tpc.category_id AS tpc_category_id,
+            tpc.name        AS tpc_name,
+            tpc.description AS tpc_description,
+            tpc.create_at   AS tpc_create_at,
+            tpc.update_at   AS tpc_update_at,
+            tpf.id          AS tpf_id,
+            tpf.field_id    AS tpf_field_id,
+            tpf.category_id AS tpf_category_id,
+            tpf.name        AS tpf_name,
+            tpf.label       AS tpf_label,
+            tpf.type        AS tpf_type,
+            tpf.required    AS tpf_required,
+            tpf.options     AS tpf_options,
+            tpf.sort        AS tpf_sort,
+            tpf.description AS tpf_description,
+            tpf.created_at  AS tpf_created_at
+        FROM
+            t_plan_category tpc LEFT JOIN t_plan_field tpf ON tpc.category_id = tpf.category_id
+        WHERE
+            tpc.category_id = #{categoryId}
+    </select>
+
+    <select id="getPlanDirectoryFileList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List">
+        </include>
+        from t_plan_file t
+        <where>
+            <if test="query.keyword !=null">
+                and t.name like CONCAT('%',#{query.keyword},'%')
+            </if>
+            <if test="query.directoryId !=null">
+                and t.directory_id = #{query.directoryId}
+            </if>
+        </where>
+    </select>
 </mapper>

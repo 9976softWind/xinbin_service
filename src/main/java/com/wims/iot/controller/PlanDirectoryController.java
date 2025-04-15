@@ -7,6 +7,8 @@ import com.wims.iot.common.result.KgPageResult;
 import com.wims.iot.common.result.KgpResult;
 import com.wims.iot.common.result.KgpResultCode;
 import com.wims.iot.model.entity.PlanDirectory;
+import com.wims.iot.model.entity.PlanFile;
+import com.wims.iot.model.query.PlanDirectoryFileQuery;
 import com.wims.iot.model.query.PlanDirectoryQuery;
 import com.wims.iot.service.IPlanDirectoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,28 @@ public class PlanDirectoryController {
         query.setPage(page);
         query.setPageSize(pageSize);
         IPage<PlanDirectory> result = planDirectoriesService.getPlanDirectoryList(query);
+        return KgPageResult.success(result);
+    }
+
+    /**
+     * 目录下的文件列表查询
+     * @param directoryId
+     * @param keyword
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/{directoryId}/files")
+    public KgPageResult<PlanFile> getPlanDirectoryFileList(@PathVariable String directoryId,
+                                                           @RequestParam(value = "keyword",required = false) String keyword,
+                                                           @RequestParam(value = "page",required = true) Integer page,
+                                                           @RequestParam(value = "pageSize",required = true) Integer pageSize){
+        PlanDirectoryFileQuery query = new PlanDirectoryFileQuery();
+        query.setDirectoryId(directoryId);
+        query.setKeyword(keyword);
+        query.setPage(page);
+        query.setPageSize(pageSize);
+        IPage<PlanFile> result = planDirectoriesService.getPlanDirectoryFileList(query);
         return KgPageResult.success(result);
     }
 

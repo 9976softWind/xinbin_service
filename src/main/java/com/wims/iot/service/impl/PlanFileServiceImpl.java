@@ -1,6 +1,9 @@
 package com.wims.iot.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -12,6 +15,8 @@ import com.wims.iot.mapper.PlanFileMapper;
 import com.wims.iot.model.entity.ColFile;
 import com.wims.iot.model.entity.PlanField;
 import com.wims.iot.model.entity.PlanFile;
+import com.wims.iot.model.query.PlanDirectoryFileQuery;
+import com.wims.iot.model.vo.PlanCategoryVo;
 import com.wims.iot.service.IColFileService;
 import com.wims.iot.service.IPlanFieldService;
 import com.wims.iot.service.IPlanFileService;
@@ -95,6 +100,25 @@ public class PlanFileServiceImpl extends ServiceImpl<PlanFileMapper, PlanFile> i
         planFile.setEntityCategoryProperty(entityInfo);
         planFile.setUpdatedAt(new Date());
         return this.baseMapper.update(planFile,new QueryWrapper<PlanFile>().eq("id",id)) == 1;
+    }
+
+    @Override
+    public PlanCategoryVo getPlanFileCategoryInfo(String id) {
+        PlanFile planFile = this.baseMapper.selectOne(new QueryWrapper<PlanFile>().eq("id", id));
+        PlanCategoryVo planCategoryVo = null;
+        if(ObjectUtil.isNull(planFile)){
+            return planCategoryVo;
+        }else{
+            planCategoryVo = this.baseMapper.getPlanFileCategoryInfo(planFile.getEntityCategoryId());
+        }
+        return planCategoryVo;
+    }
+
+    @Override
+    public IPage<PlanFile> getPlanDirectoryFileList(PlanDirectoryFileQuery query) {
+        Page<PlanFile> page = new Page<>(query.getPage(), query.getPageSize());
+        this.baseMapper.getPlanDirectoryFileList(page,query);
+        return page;
     }
 
     @Override

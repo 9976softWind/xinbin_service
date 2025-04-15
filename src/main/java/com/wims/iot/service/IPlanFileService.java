@@ -1,7 +1,10 @@
 package com.wims.iot.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wims.iot.model.entity.PlanFile;
+import com.wims.iot.model.query.PlanDirectoryFileQuery;
+import com.wims.iot.model.vo.PlanCategoryVo;
 
 /**
  * <p>
@@ -27,4 +30,8 @@ public interface IPlanFileService extends IService<PlanFile> {
     Boolean setPlanFileBasicInfo(String id, PlanFile planFile);
 
     Boolean setPlanFileEntityInfo(String id, String entityInfo);
+
+    PlanCategoryVo getPlanFileCategoryInfo(String id);
+
+    IPage<PlanFile> getPlanDirectoryFileList(PlanDirectoryFileQuery query);
 }

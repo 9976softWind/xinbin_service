@@ -3,6 +3,7 @@ package com.wims.iot.controller;
 import com.wims.iot.common.exception.KGBusinessException;
 import com.wims.iot.common.result.KgpResult;
 import com.wims.iot.model.entity.PlanFile;
+import com.wims.iot.model.vo.PlanCategoryVo;
 import com.wims.iot.service.IPlanFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +57,11 @@ public class PlanFileController {
         } catch (KGBusinessException e){
             return KgpResult.failed(e.getResultCode());
         }
+    }
+
+    @GetMapping("/{id}/entityCategory")
+    public KgpResult<PlanCategoryVo> getPlanFileCategoryInfo(@PathVariable String id){
+        return KgpResult.success(planFileService.getPlanFileCategoryInfo(id)) ;
     }
 
 }

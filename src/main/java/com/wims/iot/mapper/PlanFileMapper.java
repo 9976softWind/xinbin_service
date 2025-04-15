@@ -1,7 +1,10 @@
 package com.wims.iot.mapper;
 
-import com.wims.iot.model.entity.PlanFile;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wims.iot.model.entity.PlanFile;
+import com.wims.iot.model.query.PlanDirectoryFileQuery;
+import com.wims.iot.model.vo.PlanCategoryVo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -15,4 +18,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface PlanFileMapper extends BaseMapper<PlanFile> {
 
+    PlanCategoryVo getPlanFileCategoryInfo(String id);
+
+    Page<PlanFile> getPlanDirectoryFileList(Page<PlanFile> page, PlanDirectoryFileQuery query);
 }

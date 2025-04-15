@@ -3,6 +3,8 @@ package com.wims.iot.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wims.iot.model.entity.PlanDirectory;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wims.iot.model.entity.PlanFile;
+import com.wims.iot.model.query.PlanDirectoryFileQuery;
 import com.wims.iot.model.query.PlanDirectoryQuery;
 
 /**
@@ -25,4 +27,5 @@ public interface IPlanDirectoryService extends IService<PlanDirectory> {
 
     PlanDirectory transferPlanDirectory(String directoryId, String newParentId);
 
+    IPage<PlanFile> getPlanDirectoryFileList( PlanDirectoryFileQuery query);
 }

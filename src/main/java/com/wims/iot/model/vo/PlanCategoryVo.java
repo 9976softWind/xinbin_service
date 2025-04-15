@@ -1,9 +1,11 @@
 package com.wims.iot.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.wims.iot.model.entity.PlanField;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author tdw
@@ -38,6 +40,11 @@ public class PlanCategoryVo {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateAt;
+
+    /**
+     * 主体字段信息
+     */
+    private List<PlanField> fields;
 
 
 

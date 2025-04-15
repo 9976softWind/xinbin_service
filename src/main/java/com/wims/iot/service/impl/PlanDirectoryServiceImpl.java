@@ -9,6 +9,8 @@ import com.wims.iot.common.result.KgpResultCode;
 import com.wims.iot.common.util.RandomStringGenerator;
 import com.wims.iot.mapper.PlanDirectoryMapper;
 import com.wims.iot.model.entity.PlanDirectory;
+import com.wims.iot.model.entity.PlanFile;
+import com.wims.iot.model.query.PlanDirectoryFileQuery;
 import com.wims.iot.model.query.PlanDirectoryQuery;
 import com.wims.iot.service.IPlanDirectoryService;
 import com.wims.iot.service.IPlanFileService;
@@ -82,6 +84,11 @@ public class PlanDirectoryServiceImpl extends ServiceImpl<PlanDirectoryMapper, P
         directory.setUpdatedAt(new Date());
         boolean transfer = this.update(directory, new QueryWrapper<PlanDirectory>().eq("id", directoryId));
         return transfer ? directory : null;
+    }
+
+    @Override
+    public IPage<PlanFile> getPlanDirectoryFileList(PlanDirectoryFileQuery query) {
+        return planFileService.getPlanDirectoryFileList(query);
     }
 
     public Boolean hasReName(String directoryName){
