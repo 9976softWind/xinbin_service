@@ -2,6 +2,7 @@ package com.wims.iot.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.wims.iot.model.entity.PlanCategory;
+import com.wims.iot.model.vo.PlanCategoryVo;
 
 /**
  * <p>
@@ -9,11 +10,14 @@ import com.wims.iot.model.entity.PlanCategory;
  * </p>
  *
  * @author tdw
- * @since 2025-04-14
+ * @since 2025-04-15
  */
 public interface IPlanCategoryService extends IService<PlanCategory> {
 
-    PlanCategory addPlanCategory(String name, String description);
+    PlanCategoryVo addPlanCategory(String name, String description);
 
-    PlanCategory setPlanCategory(String categoryId, PlanCategory planCategory);
+    PlanCategoryVo setPlanCategory(String categoryId, PlanCategory planCategory);
+
+    PlanCategory getPlanCateGory(String categoryId);
+
 }

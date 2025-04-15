@@ -17,6 +17,7 @@ public class KgpResult<T> implements Serializable {
 
     private T data;
 
+    private String message;
 
     public static <T> KgpResult<T> success() {
         return success(null);
@@ -24,31 +25,56 @@ public class KgpResult<T> implements Serializable {
 
     public static <T> KgpResult<T> success(T data) {
         KgpResult<T> result = new KgpResult<>();
-        result.setCode(ResultCode.SUCCESS.getCode());
+        result.setCode(KgpResultCode.SYSTEM_EXECUTION_SUCCESS.getCode());
+        result.setMessage(KgpResultCode.SYSTEM_EXECUTION_SUCCESS.getMsg());
         result.setData(data);
         return result;
     }
 
     public static <T> KgpResult<T> failed() {
-        return result(ResultCode.SYSTEM_EXECUTION_ERROR.getCode(),null);
+        return result(KgpResultCode.SYSTEM_EXECUTION_ERROR.getCode(), KgpResultCode.SYSTEM_EXECUTION_ERROR.getMsg(), null);
+    }
+
+    public static <T> KgpResult<T> failed(String msg) {
+        return result(KgpResultCode.SYSTEM_EXECUTION_ERROR.getCode(), msg, null);
+    }
+
+    public static <T> KgpResult<T> judge(boolean status) {
+        if (status) {
+            return success();
+        } else {
+            return failed();
+        }
+    }
+    public static <T> KgpResult<T> judge(boolean status,KgpResultCode resultCode) {
+        if (status) {
+            return success();
+        } else {
+            return failed(resultCode);
+        }
     }
 
     public static <T> KgpResult<T> failed(KgpResultCode resultCode) {
-        return result(resultCode.getCode(), null);
+        return result(resultCode.getCode(), resultCode.getMsg(), null);
+    }
+
+    public static <T> KgpResult<T> failed(KgpResultCode resultCode, String message) {
+        return result(resultCode.getCode(), message, null);
     }
 
     private static <T> KgpResult<T> result(KgpResultCode resultCode, T data) {
-        return result(resultCode.getCode(),  data);
+        return result(resultCode.getCode(), resultCode.getMsg(), data);
     }
 
-    private static <T> KgpResult<T> result(String code,  T data) {
+    private static <T> KgpResult<T> result(String code, String message, T data) {
         KgpResult<T> result = new KgpResult<>();
         result.setCode(code);
         result.setData(data);
+        result.setMessage(message);
         return result;
     }
 
     public static boolean isSuccess(KgpResult<?> result) {
-        return result != null && ResultCode.SUCCESS.getCode().equals(result.getCode());
+        return result != null && KgpResultCode.SYSTEM_EXECUTION_SUCCESS.getCode().equals(result.getCode());
     }
 }

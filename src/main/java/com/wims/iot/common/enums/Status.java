@@ -23,7 +23,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 /**
- * status enum      // todo #4855 One category one interval
+ * status enum
  */
 public enum Status {
 

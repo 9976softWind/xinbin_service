@@ -1,6 +1,5 @@
 package com.wims.iot.common.result;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -14,18 +13,16 @@ import java.io.Serializable;
  **/
 @AllArgsConstructor
 @NoArgsConstructor
-public enum KgpResultCode implements  Serializable {
+public enum KgpResultCode implements IResultCode, Serializable  {
 
 
-    VALIDATION_ERROR("VALIDATION_ERROR", "请求参数校验失败",null),
+    SYSTEM_EXECUTION_SUCCESS("SYSTEM_EXECUTION_SUCCESS", "操作成功"),
 
-    DIRECTORY_NAME_CONFLICT("DIRECTORY_NAME_CONFLICT", "在父目录下已存在同名目录",null),
+    DIRECTORY_NAME_CONFLICT("DIRECTORY_NAME_CONFLICT", "已存在同名目录"),
 
-    DIRECTORY_NOT_FOUND("DIRECTORY_NOT_FOUND","指定的目录不存在",null),
+    DIRECTORY_NOT_EMPTY("DIRECTORY_NOT_EMPTY", "目录不为空，无法删除。如需强制删除请设置 force=true"),
 
-    DIRECTORY_NOT_EMPTY("DIRECTORY_NOT_EMPTY", "目录不为空，无法删除。如需强制删除请设置 force=true",null),
-
-    SYSTEM_EXECUTION_ERROR("SYSTEM_EXECUTION_ERROR", "操作失败",null);
+    SYSTEM_EXECUTION_ERROR("SYSTEM_EXECUTION_ERROR", "操作失败");
 
 
     public String getCode() {
@@ -40,15 +37,12 @@ public enum KgpResultCode implements  Serializable {
 
     private String message;
 
-    private ArrayNode details;
-
 
     @Override
     public String toString() {
         return "KgpResultCode{" +
                 "code='" + code + '\'' +
                 ", message='" + message + '\'' +
-                ", details=" + details +
                 '}';
     }
 
@@ -58,6 +52,6 @@ public enum KgpResultCode implements  Serializable {
                 return value;
             }
         }
-        return SYSTEM_EXECUTION_ERROR; // 默认系统执行错误
+        return SYSTEM_EXECUTION_ERROR; // 默认执行错误
     }
 }

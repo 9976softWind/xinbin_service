@@ -7,9 +7,6 @@ import lombok.Data;
 @Data
 public class PlanDirectoryQuery {
 
-    @Schema(description="父目录id")
-    private String parentId;
-
     @Schema(description="预案目录名称")
     private String name;
 

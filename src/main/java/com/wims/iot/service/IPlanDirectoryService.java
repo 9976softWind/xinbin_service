@@ -15,11 +15,11 @@ import com.wims.iot.model.query.PlanDirectoryQuery;
  */
 public interface IPlanDirectoryService extends IService<PlanDirectory> {
 
-    IPage<PlanDirectory> getPlanDirectoryPage(PlanDirectoryQuery query);
+    IPage<PlanDirectory> getPlanDirectoryList(PlanDirectoryQuery query);
 
-    PlanDirectory addPlanDirectory(String name, String parentId);
+    Boolean addPlanDirectory(String name);
 
-    PlanDirectory setPlanDirectory(String directoryId, String name);
+    Boolean setPlanDirectory(String directoryId, String name);
 
     Boolean deletePlanDirectory(String directoryId, Boolean isForce);
 

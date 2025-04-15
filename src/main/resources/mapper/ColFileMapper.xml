@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wims.iot.mapper.ColFileMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.ColFile">
+        <id column="id" property="id" />
+        <id column="file_id" property="fileId" />
+        <result column="filename" property="filename" />
+        <result column="filepath" property="filepath" />
+        <result column="filetype" property="filetype" />
+        <result column="filesize" property="filesize" />
+        <result column="institution" property="institution" />
+        <result column="upstate" property="upstate" />
+        <result column="creator" property="creator" />
+        <result column="createtime" property="createtime" />
+        <result column="isdelete" property="isdelete" />
+        <result column="catapath" property="catapath" />
+        <result column="permission" property="permission" />
+        <result column="business" property="business" />
+        <result column="administration" property="administration" />
+        <result column="stage" property="stage" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, file_id, filename, filepath, filetype, filesize, institution, upstate, creator, createtime, isdelete, catapath, permission, business, administration, stage
+    </sql>
+
+</mapper>

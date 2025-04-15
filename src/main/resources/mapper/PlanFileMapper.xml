@@ -6,23 +6,20 @@
     <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanFile">
         <id column="id" property="id" />
         <result column="name" property="name" />
-        <result column="size" property="size" />
-        <result column="type" property="type" />
+        <result column="file_id" property="fileId" />
         <result column="directory_id" property="directoryId" />
         <result column="description" property="description" />
+        <result column="preplan_priority" property="preplanPriority" />
+        <result column="disaster_type" property="disasterType" />
+        <result column="applicable_area" property="applicableArea" />
         <result column="entity_category_id" property="entityCategoryId" />
-        <result column="url" property="url" />
         <result column="created_at" property="createdAt" />
         <result column="updated_at" property="updatedAt" />
-        <result column="uploader_id" property="uploaderId" />
-        <result column="disaster_type" property="disasterType" />
-        <result column="preplan_priority" property="preplanPriority" />
-        <result column="applicable_area" property="applicableArea" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, size, type, directory_id, description, entity_category_id, url, created_at, updated_at, uploader_id, disaster_type, preplan_priority, applicable_area
+        id, name, file_id, directory_id, description, preplan_priority, disaster_type, applicable_area, entity_category_id, created_at, updated_at
     </sql>
 
 </mapper>

@@ -34,21 +34,6 @@ public class PlanDirectory implements Serializable {
     private String name;
 
     /**
-     * 父目录id
-     */
-    private String parentId;
-
-    /**
-     * 父目录节点id路径
-     */
-    private String treePath;
-
-    /**
-     * 显示顺序
-     */
-    private Integer sort;
-
-    /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

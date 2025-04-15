@@ -16,25 +16,30 @@ import java.util.Date;
  * </p>
  *
  * @author tdw
- * @since 2025-04-14
+ * @since 2025-04-15
  */
 @Getter
 @Setter
-@TableName("t_plan_category_field")
-public class PlanCategoryField implements Serializable {
+@TableName("t_plan_field")
+public class PlanField implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 字段id
+     * 主键id
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 预案类别Id（引用自t_plan_categories表的id字段）
+     * 预案类别字段Id
      */
-    private String planCategoryId;
+    private String fieldId;
+
+    /**
+     * 预案类别Id（引用自t_plan_category表的category_id字段）
+     */
+    private String categoryId;
 
     /**
      * 字段Key

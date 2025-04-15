@@ -13,11 +13,14 @@ public class KgPageResult<T> implements Serializable {
 
     private Data<T> data;
 
+    private String message;
+
     public static <T> KgPageResult<T> success(IPage<T> page) {
         KgPageResult<T> result = new KgPageResult<>();
-        result.setCode(ResultCode.SUCCESS.getCode());
+        result.setCode(KgpResultCode.SYSTEM_EXECUTION_SUCCESS.getCode());
+        result.setMessage(KgpResultCode.SYSTEM_EXECUTION_SUCCESS.getMsg());
         Data data = new Data<T>();
-        data.setData(page.getRecords());
+        data.setList(page.getRecords());
         Pagination pagination = new Pagination();
         pagination.setCurrentPage(page.getCurrent());
         pagination.setPageSize(page.getSize());
@@ -31,7 +34,7 @@ public class KgPageResult<T> implements Serializable {
     @lombok.Data
     public static class Data<T> {
 
-        private List<T> data;
+        private List<T> list;
 
         private Pagination pagination;
 

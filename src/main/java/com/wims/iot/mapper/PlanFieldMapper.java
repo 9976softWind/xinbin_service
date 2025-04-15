@@ -1,6 +1,6 @@
 package com.wims.iot.mapper;
 
-import com.wims.iot.model.entity.PlanCategoryField;
+import com.wims.iot.model.entity.PlanField;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -10,9 +10,9 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author tdw
- * @since 2025-04-14
+ * @since 2025-04-15
  */
 @Mapper
-public interface PlanCategoryFieldMapper extends BaseMapper<PlanCategoryField> {
+public interface PlanFieldMapper extends BaseMapper<PlanField> {
 
 }

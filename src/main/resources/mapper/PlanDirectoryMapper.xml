@@ -6,16 +6,13 @@
     <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanDirectory">
         <id column="id" property="id" />
         <result column="name" property="name" />
-        <result column="parent_id" property="parentId" />
-        <result column="tree_path" property="treePath" />
-        <result column="sort" property="sort" />
         <result column="created_at" property="createdAt" />
         <result column="updated_at" property="updatedAt" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, parent_id, tree_path, sort, created_at, updated_at
+        id, name, created_at, updated_at
     </sql>
 
     <select id="getPlanDirectoryPage" resultMap="BaseResultMap">
@@ -24,9 +21,6 @@
         </include>
         from t_plan_directory t
         <where>
-            <if test="query.parentId !=null">
-                and t.parent_id = #{query.parentId}
-            </if>
             <if test="query.name !=null">
                 and t.name like CONCAT('%',#{query.name},'%')
             </if>

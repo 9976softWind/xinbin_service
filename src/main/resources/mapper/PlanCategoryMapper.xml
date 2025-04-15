@@ -5,17 +5,16 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanCategory">
         <id column="id" property="id" />
+        <result column="category_id" property="categoryId" />
         <result column="name" property="name" />
-        <result column="source" property="source" />
         <result column="description" property="description" />
-        <result column="fields" property="fields" />
-        <result column="created_at" property="createdAt" />
-        <result column="updated_at" property="updatedAt" />
+        <result column="create_at" property="createAt" />
+        <result column="update_at" property="updateAt" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, source, description, fields, created_at, updated_at
+        id, category_id, name, description, create_at, update_at
     </sql>
 
 </mapper>

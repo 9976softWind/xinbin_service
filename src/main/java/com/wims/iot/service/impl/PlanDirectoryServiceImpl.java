@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mysql.cj.util.StringUtils;
+import com.wims.iot.common.exception.KGBusinessException;
+import com.wims.iot.common.result.KgpResultCode;
 import com.wims.iot.common.util.RandomStringGenerator;
 import com.wims.iot.mapper.PlanDirectoryMapper;
 import com.wims.iot.model.entity.PlanDirectory;
 import com.wims.iot.model.query.PlanDirectoryQuery;
 import com.wims.iot.service.IPlanDirectoryService;
+import com.wims.iot.service.IPlanFileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -25,50 +28,50 @@ import java.util.Date;
 @Service
 public class PlanDirectoryServiceImpl extends ServiceImpl<PlanDirectoryMapper, PlanDirectory> implements IPlanDirectoryService {
 
+    @Autowired
+    IPlanFileService planFileService;
 
     @Override
-    public IPage<PlanDirectory> getPlanDirectoryPage(PlanDirectoryQuery query) {
+    public IPage<PlanDirectory> getPlanDirectoryList(PlanDirectoryQuery query) {
         Page<PlanDirectory> page = new Page<>(query.getPage(), query.getPageSize());
         this.baseMapper.getPlanDirectoryPage(page,query);
         return page;
     }
 
     @Override
-    public PlanDirectory addPlanDirectory(String name, String parentId) {
+    public Boolean addPlanDirectory(String name) {
+        if(hasReName(name)){
+            throw new KGBusinessException(KgpResultCode.DIRECTORY_NAME_CONFLICT);
+        }
         PlanDirectory planDirectory = new PlanDirectory();
         planDirectory.setId("dir_" + RandomStringGenerator.generate(6));
         planDirectory.setName(name);
         planDirectory.setCreatedAt(new Date());
-        if(!StringUtils.isNullOrEmpty(parentId)){
-            planDirectory.setParentId(parentId);
-            planDirectory.setTreePath(parentId+","+ planDirectory.getId());
-        }else{
-            planDirectory.setParentId(planDirectory.getId());
-            planDirectory.setTreePath(planDirectory.getId());
-        }
-        int insert = this.baseMapper.insert(planDirectory);
-        return insert == 1 ? planDirectory : null;
+        return this.baseMapper.insert(planDirectory) == 1 ? true : false;
     }
 
     @Override
-    public PlanDirectory setPlanDirectory(String directoryId, String name) {
+    public Boolean setPlanDirectory(String directoryId, String name) {
+        if(hasReName(name)){
+            throw new KGBusinessException(KgpResultCode.DIRECTORY_NAME_CONFLICT);
+        }
         PlanDirectory planDirectory = new PlanDirectory();
         planDirectory.setName(name);
         planDirectory.setUpdatedAt(new Date());
-        int update = this.baseMapper.update(planDirectory, new QueryWrapper<PlanDirectory>().eq("id", directoryId));
-        return update == 1 ? this.baseMapper.selectById(directoryId) : null;
+        return this.baseMapper.update(planDirectory, new QueryWrapper<PlanDirectory>().eq("id", directoryId)) == 1 ? true : false;
     }
 
     @Override
     public Boolean deletePlanDirectory(String directoryId, Boolean isForce) {
-        // 相关的文件做外键约束，级联删除，就不在编码中体现了
-        if(this.dirIsEmpty(directoryId)) {
+        //TODO:级联删除相关文件，文件关联的主体
+        Boolean dirHasFiles = planFileService.isDirHasFiles(directoryId);
+        if(!dirHasFiles) {
             return this.baseMapper.delete(new QueryWrapper<PlanDirectory>().eq("id", directoryId)) == 1;
         }else{
             if(!isForce){
-                return false;
+                throw new KGBusinessException(KgpResultCode.DIRECTORY_NOT_EMPTY);
             }else{
-                return this.baseMapper.delete(new QueryWrapper<PlanDirectory>().eq("parent_id", directoryId)) != 0;
+                return this.baseMapper.delete(new QueryWrapper<PlanDirectory>().eq("id", directoryId)) != 0;
             }
         }
     }
@@ -76,17 +79,13 @@ public class PlanDirectoryServiceImpl extends ServiceImpl<PlanDirectoryMapper, P
     @Override
     public PlanDirectory transferPlanDirectory(String directoryId, String newParentId) {
         PlanDirectory directory = this.baseMapper.selectOne(new QueryWrapper<PlanDirectory>().eq("id", directoryId));
-        directory.setParentId(newParentId);
-        String treePath = directory.getTreePath();
-        treePath.replace(directory.getParentId(),newParentId);
-        directory.setTreePath(treePath);
         directory.setUpdatedAt(new Date());
         boolean transfer = this.update(directory, new QueryWrapper<PlanDirectory>().eq("id", directoryId));
         return transfer ? directory : null;
     }
 
-    public Boolean dirIsEmpty(String directoryId){
-        return this.baseMapper.selectCount(new QueryWrapper<PlanDirectory>().eq("parent_id",directoryId).ne("id",directoryId)) == 0;
+    public Boolean hasReName(String directoryName){
+        return this.baseMapper.exists(new QueryWrapper<PlanDirectory>().eq("name",directoryName));
     }
 
 }

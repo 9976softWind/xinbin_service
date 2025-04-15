@@ -1,10 +1,12 @@
 package com.wims.iot.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -32,17 +34,12 @@ public class PlanFile implements Serializable {
     private String name;
 
     /**
-     * 文件大小
+     * 引用的知识库文件主键id（col_file的file_id字段）
      */
-    private Long size;
+    private String fileId;
 
     /**
-     * 文件类型
-     */
-    private String type;
-
-    /**
-     * 所属目录id（引用t_plan_directories的id字段）
+     * 所属目录id（引用t_plan_directory的id字段）
      */
     private String directoryId;
 
@@ -51,32 +48,6 @@ public class PlanFile implements Serializable {
      */
     private String description;
 
-    /**
-     * 文件关联的预案主体类别Id（t_plan_categories的Id字段）
-     */
-    private String entityCategoryId;
-
-    /**
-     * 资源地址
-     */
-    private String url;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createdAt;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updatedAt;
-
-    /**
-     * 上传人
-     */
-    private String uploaderId;
-
-    private Integer disasterType;
 
     /**
      * 预案优先级
@@ -84,9 +55,33 @@ public class PlanFile implements Serializable {
     private Integer preplanPriority;
 
     /**
+     * 灾害类型
+     */
+    private Integer disasterType;
+
+    /**
      * 适用地区
      */
     private String applicableArea;
+
+    /**
+     * 文件关联的预案主体类别Id（t_plan_category的category_id字段）
+     */
+    private String entityCategoryId;
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createdAt;
+
+    /**
+     * 更新时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updatedAt;
+
+
 
 
 }

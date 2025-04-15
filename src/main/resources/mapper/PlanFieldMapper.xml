@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wims.iot.mapper.PlanCategoryFieldMapper">
+<mapper namespace="com.wims.iot.mapper.PlanFieldMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanCategoryField">
+    <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanField">
         <id column="id" property="id" />
-        <result column="plan_category_id" property="planCategoryId" />
+        <result column="field_id" property="fieldId" />
+        <result column="category_id" property="categoryId" />
         <result column="name" property="name" />
         <result column="label" property="label" />
         <result column="type" property="type" />
@@ -18,7 +19,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, plan_category_id, name, label, type, required, options, order, description, created_at
+        id, field_id, category_id, name, label, type, required, options, order, description, created_at
     </sql>
 
 </mapper>

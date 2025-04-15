@@ -2,13 +2,13 @@ package com.wims.iot.controller;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.wims.iot.common.exception.KGBusinessException;
 import com.wims.iot.common.result.KgPageResult;
 import com.wims.iot.common.result.KgpResult;
 import com.wims.iot.common.result.KgpResultCode;
 import com.wims.iot.model.entity.PlanDirectory;
 import com.wims.iot.model.query.PlanDirectoryQuery;
 import com.wims.iot.service.IPlanDirectoryService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,42 +27,43 @@ public class PlanDirectoryController {
     @Autowired
     IPlanDirectoryService planDirectoriesService;
 
-    //TODO:获取预案目录：获取预案目录列表，支持按父目录筛选、搜索和分页，常用于构建目录树或显示特
-    //定层级的目录。
-
-
-
-    @Operation(summary = "分页查询预案目录")
+    /**
+     * 获取所有预案目录列表，支持按名称筛选、搜索和分页。不支持多层目录结构，所有目录为一级目录。
+     * @param name
+     * @param sortBy
+     * @param sortOrder
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @GetMapping
-    public KgPageResult<PlanDirectory> getPlanDirectoryPage(@RequestParam(value = "parentId",required = false) String parentId,
-                                                            @RequestParam(value = "name",required = false) String name,
+    public KgPageResult<PlanDirectory> getPlanDirectoryList(@RequestParam(value = "name",required = false) String name,
                                                             @RequestParam(value = "sortBy",required = false) String sortBy,
                                                             @RequestParam(value = "sortOrder",required = false) String sortOrder,
                                                             @RequestParam(value = "page",required = true) Integer page,
                                                             @RequestParam(value = "pageSize",required = true) Integer pageSize){
         PlanDirectoryQuery query = new PlanDirectoryQuery();
-        query.setParentId(parentId);
         query.setName(name);
         query.setSortBy(sortBy);
         query.setSortOrder(sortOrder);
         query.setPage(page);
         query.setPageSize(pageSize);
-        IPage<PlanDirectory> result = planDirectoriesService.getPlanDirectoryPage(query);
+        IPage<PlanDirectory> result = planDirectoriesService.getPlanDirectoryList(query);
         return KgPageResult.success(result);
     }
 
-
     /**
      * 新增预案目录
-     * @param name 新目录的名称，同一父目录下唯一
-     * @param parentId 父目录的 ID，若为根目录则不传
+     * @param name 新目录的名称，在系统中必须唯一
      * @return
      */
     @PostMapping
-    public KgpResult<PlanDirectory> addPlanDirectory(@RequestParam(value = "name",required = true) String name,
-                                                     @RequestParam(value = "parentId",required = false) String parentId){
-        PlanDirectory insertResult = planDirectoriesService.addPlanDirectory(name,parentId);
-        return ObjectUtil.isNull(insertResult) ? KgpResult.failed(KgpResultCode.SYSTEM_EXECUTION_ERROR) : KgpResult.success(insertResult);
+    public KgpResult<Boolean> addPlanDirectory(@RequestParam(value = "name",required = true) String name){
+        try {
+            return KgpResult.success(planDirectoriesService.addPlanDirectory(name));
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
     }
 
     /**
@@ -72,9 +73,12 @@ public class PlanDirectoryController {
      * @return
      */
     @PutMapping("/{directoryId}")
-    public KgpResult<PlanDirectory> setPlanDirectory(@PathVariable String directoryId, @RequestParam(value = "name") String name){
-        PlanDirectory updateResult = planDirectoriesService.setPlanDirectory(directoryId,name);
-        return ObjectUtil.isNull(updateResult) ? KgpResult.failed(KgpResultCode.SYSTEM_EXECUTION_ERROR) : KgpResult.success(updateResult);
+    public KgpResult<Boolean> setPlanDirectory(@PathVariable String directoryId, @RequestParam(value = "name") String name){
+        try {
+            return KgpResult.success(planDirectoriesService.setPlanDirectory(directoryId,name));
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
     }
 
     /**
@@ -85,8 +89,12 @@ public class PlanDirectoryController {
      */
     @DeleteMapping("/{directoryId}")
     public KgpResult<PlanDirectory> deletePlanDirectory(@PathVariable String directoryId, @RequestParam(value = "force",required = false) Boolean isForce){
-        Boolean deleteResult = planDirectoriesService.deletePlanDirectory(directoryId, isForce);
-        return deleteResult ? KgpResult.success() : KgpResult.failed();
+        try {
+            Boolean deleteResult = planDirectoriesService.deletePlanDirectory(directoryId, isForce);
+            return deleteResult ? KgpResult.success() : KgpResult.failed();
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
     }
 
     @PutMapping("/{directoryId}/move")
