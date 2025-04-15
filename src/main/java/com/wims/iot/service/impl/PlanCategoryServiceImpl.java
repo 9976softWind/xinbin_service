@@ -3,10 +3,11 @@ package com.wims.iot.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mysql.cj.util.StringUtils;
+import com.wims.iot.common.exception.KGBusinessException;
+import com.wims.iot.common.result.KgpResultCode;
 import com.wims.iot.common.util.RandomStringGenerator;
 import com.wims.iot.mapper.PlanCategoryMapper;
 import com.wims.iot.model.entity.PlanCategory;
-import com.wims.iot.model.vo.PlanCategoryVo;
 import com.wims.iot.service.IPlanCategoryService;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,10 @@ import java.util.Date;
 public class PlanCategoryServiceImpl extends ServiceImpl<PlanCategoryMapper, PlanCategory> implements IPlanCategoryService {
 
     @Override
-    public PlanCategoryVo addPlanCategory(String name, String description) {
+    public Boolean addPlanCategory(String name, String description) {
+        if(hasReName(name)){
+            throw new KGBusinessException(KgpResultCode.CATEGORY_NAME_CONFLICT);
+        }
         PlanCategory planCategory = new PlanCategory();
         planCategory.setCategoryId("cat_" + RandomStringGenerator.generate(6));
         planCategory.setName(name);
@@ -32,36 +36,27 @@ public class PlanCategoryServiceImpl extends ServiceImpl<PlanCategoryMapper, Pla
             planCategory.setDescription(description);
         }
         planCategory.setCreateAt(new Date());
-        int insert = this.baseMapper.insert(planCategory);
-        PlanCategoryVo planCategoryVo = new PlanCategoryVo();
-        planCategoryVo.setId(planCategory.getCategoryId());
-        planCategoryVo.setName(planCategory.getName());
-        planCategoryVo.setDescription(planCategory.getDescription());
-        planCategoryVo.setCreateAt(planCategory.getCreateAt());
-        planCategoryVo.setUpdateAt(planCategory.getCreateAt());
-        return insert == 1 ? planCategoryVo : null;
+        return this.baseMapper.insert(planCategory) == 1 ? true : false;
     }
 
+
     @Override
-    public PlanCategoryVo setPlanCategory(String categoryId, PlanCategory planCategory) {
-        planCategory.setUpdateAt(new Date());
-        int update = this.baseMapper.update(planCategory, new QueryWrapper<PlanCategory>().eq("id", categoryId));
-        PlanCategoryVo planCategoryVo = null;
-        if( update == 1 ){
-            PlanCategory newPlanCategory = this.baseMapper.selectById(categoryId);
-            planCategoryVo = new PlanCategoryVo();
-            planCategoryVo.setId(newPlanCategory.getCategoryId());
-            planCategoryVo.setName(newPlanCategory.getName());
-            planCategoryVo.setDescription(newPlanCategory.getDescription());
-            planCategoryVo.setCreateAt(newPlanCategory.getCreateAt());
-            planCategoryVo.setUpdateAt(newPlanCategory.getCreateAt());
+    public Boolean setPlanCategory(String categoryId, PlanCategory planCategory) {
+        if(hasReName(planCategory.getName())){
+            throw new KGBusinessException(KgpResultCode.CATEGORY_NAME_CONFLICT);
         }
-        return planCategoryVo;
+        planCategory.setUpdateAt(new Date());
+        return this.baseMapper.update(planCategory,new QueryWrapper<PlanCategory>().eq("category_id",categoryId)) == 1;
     }
 
     @Override
     public PlanCategory getPlanCateGory(String categoryId) {
         return this.baseMapper.selectOne(new QueryWrapper<PlanCategory>().eq("category_id",categoryId));
+    }
+
+
+    private boolean hasReName(String name) {
+        return this.baseMapper.exists(new QueryWrapper<PlanCategory>().eq("name",name));
     }
 
 }

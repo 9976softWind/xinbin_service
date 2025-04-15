@@ -1,10 +1,8 @@
 package com.wims.iot.controller;
 
-import cn.hutool.core.util.ObjectUtil;
+import com.wims.iot.common.exception.KGBusinessException;
 import com.wims.iot.common.result.KgpResult;
-import com.wims.iot.common.result.KgpResultCode;
 import com.wims.iot.model.entity.PlanCategory;
-import com.wims.iot.model.vo.PlanCategoryVo;
 import com.wims.iot.service.IPlanCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,28 +23,36 @@ public class PlanCategoryController {
     IPlanCategoryService planCategoryService;
 
     /**
-     * 新增预案类别（主题）
+     * 新增预案类别（主体）
      * @param name 类别名称，唯一
      * @param description 类别描述
      * @return
      */
     @PostMapping
-    public KgpResult<PlanCategoryVo> addPlanCategory(@RequestParam(value = "name",required = true) String name,
+    public KgpResult<Boolean> addPlanCategory(@RequestParam(value = "name",required = true) String name,
                                                      @RequestParam(value = "description",required = false) String description){
-        PlanCategoryVo insertResult = planCategoryService.addPlanCategory(name,description);
-        return ObjectUtil.isNull(insertResult) ? KgpResult.failed(KgpResultCode.SYSTEM_EXECUTION_ERROR) : KgpResult.success(insertResult);
+        try {
+            return KgpResult.judge(planCategoryService.addPlanCategory(name,description));
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
     }
 
     /**
-     * 修改现有预案类别的名称或描述
+     * 编辑类别名称
      * @param categoryId
      * @param planCategory
      * @return
      */
     @PutMapping("/{categoryId}")
-    public KgpResult<PlanCategoryVo> setPlanCategory(@PathVariable String categoryId, @RequestBody PlanCategory planCategory){
-        PlanCategoryVo updateResult = planCategoryService.setPlanCategory(categoryId,planCategory);
-        return ObjectUtil.isNull(updateResult) ? KgpResult.failed(KgpResultCode.SYSTEM_EXECUTION_ERROR) : KgpResult.success(updateResult);
+    public KgpResult<Boolean> setPlanCategory(@PathVariable String categoryId, @RequestBody PlanCategory planCategory){
+        try {
+            return KgpResult.judge(planCategoryService.setPlanCategory(categoryId,planCategory));
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
+
+
     }
 
 

@@ -13,13 +13,14 @@
         <result column="disaster_type" property="disasterType" />
         <result column="applicable_area" property="applicableArea" />
         <result column="entity_category_id" property="entityCategoryId" />
+        <result column="entity_category_property" property="entityCategoryProperty" />
         <result column="created_at" property="createdAt" />
         <result column="updated_at" property="updatedAt" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, file_id, directory_id, description, preplan_priority, disaster_type, applicable_area, entity_category_id, created_at, updated_at
+        id, name, file_id, directory_id, description, preplan_priority, disaster_type, applicable_area, entity_category_id, entity_category_property, created_at, updated_at
     </sql>
 
 </mapper>

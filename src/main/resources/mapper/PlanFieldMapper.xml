@@ -12,14 +12,14 @@
         <result column="type" property="type" />
         <result column="required" property="required" />
         <result column="options" property="options" />
-        <result column="order" property="order" />
+        <result column="sort" property="sort" />
         <result column="description" property="description" />
         <result column="created_at" property="createdAt" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, field_id, category_id, name, label, type, required, options, order, description, created_at
+        id, field_id, category_id, name, label, type, required, options, sort, description, created_at
     </sql>
 
 </mapper>

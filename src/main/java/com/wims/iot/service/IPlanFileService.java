@@ -13,7 +13,7 @@ import com.wims.iot.model.entity.PlanFile;
  */
 public interface IPlanFileService extends IService<PlanFile> {
 
-    PlanFile addPlanFile(PlanFile planFile);
+    Boolean addPlanFile(PlanFile planFile);
 
     /**
      * 判断目录下是否有文件
@@ -21,4 +21,10 @@ public interface IPlanFileService extends IService<PlanFile> {
      * @return
      */
     Boolean isDirHasFiles(String directoryId);
+
+    Boolean deletePlanFile(String fileId);
+
+    Boolean setPlanFileBasicInfo(String id, PlanFile planFile);
+
+    Boolean setPlanFileEntityInfo(String id, String entityInfo);
 }

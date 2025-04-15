@@ -60,7 +60,7 @@ public class PlanDirectoryController {
     @PostMapping
     public KgpResult<Boolean> addPlanDirectory(@RequestParam(value = "name",required = true) String name){
         try {
-            return KgpResult.success(planDirectoriesService.addPlanDirectory(name));
+            return KgpResult.judge(planDirectoriesService.addPlanDirectory(name));
         } catch (KGBusinessException e){
             return KgpResult.failed(e.getResultCode());
         }
@@ -75,7 +75,7 @@ public class PlanDirectoryController {
     @PutMapping("/{directoryId}")
     public KgpResult<Boolean> setPlanDirectory(@PathVariable String directoryId, @RequestParam(value = "name") String name){
         try {
-            return KgpResult.success(planDirectoriesService.setPlanDirectory(directoryId,name));
+            return KgpResult.judge(planDirectoriesService.setPlanDirectory(directoryId,name));
         } catch (KGBusinessException e){
             return KgpResult.failed(e.getResultCode());
         }
@@ -90,8 +90,7 @@ public class PlanDirectoryController {
     @DeleteMapping("/{directoryId}")
     public KgpResult<PlanDirectory> deletePlanDirectory(@PathVariable String directoryId, @RequestParam(value = "force",required = false) Boolean isForce){
         try {
-            Boolean deleteResult = planDirectoriesService.deletePlanDirectory(directoryId, isForce);
-            return deleteResult ? KgpResult.success() : KgpResult.failed();
+            return KgpResult.judge(planDirectoriesService.deletePlanDirectory(directoryId, isForce));
         } catch (KGBusinessException e){
             return KgpResult.failed(e.getResultCode());
         }

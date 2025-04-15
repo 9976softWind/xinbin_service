@@ -22,6 +22,13 @@ public enum KgpResultCode implements IResultCode, Serializable  {
 
     DIRECTORY_NOT_EMPTY("DIRECTORY_NOT_EMPTY", "目录不为空，无法删除。如需强制删除请设置 force=true"),
 
+    FILE_ADD_CONFLICT("FILE_ADD_CONFLICT","该文件已添加至预案目录下"),
+
+    CATEGORY_NAME_CONFLICT("CATEGORY_NAME_CONFLICT","已存在同名的预案类别"),
+
+    FIELD_NAME_CONFLICT("FIELD_NAME_CONFLICT","该类别下已存在同名的字段"),
+
+
     SYSTEM_EXECUTION_ERROR("SYSTEM_EXECUTION_ERROR", "操作失败");
 
 

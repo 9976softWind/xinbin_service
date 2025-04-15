@@ -1,10 +1,8 @@
 package com.wims.iot.controller;
 
-import cn.hutool.core.util.ObjectUtil;
+import com.wims.iot.common.exception.KGBusinessException;
 import com.wims.iot.common.result.KgpResult;
-import com.wims.iot.common.result.KgpResultCode;
 import com.wims.iot.model.entity.PlanField;
-import com.wims.iot.model.vo.PlanFieldVo;
 import com.wims.iot.service.IPlanFieldService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,9 +31,12 @@ public class PlanFieldController {
      * @return
      */
     @PostMapping("/{categoryId}/fields")
-    public KgpResult<PlanFieldVo> addPlanField(@PathVariable String categoryId, @RequestBody PlanField planField){
-        PlanFieldVo insertResult = planFieldService.addPlanField(categoryId,planField);
-        return ObjectUtil.isNull(insertResult) ? KgpResult.failed(KgpResultCode.SYSTEM_EXECUTION_ERROR) : KgpResult.success(insertResult);
+    public KgpResult<Boolean> addPlanField(@PathVariable String categoryId, @RequestBody PlanField planField){
+        try {
+            return KgpResult.judge(planFieldService.addPlanField(categoryId,planField));
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
     }
 
     /**
@@ -45,8 +46,9 @@ public class PlanFieldController {
      */
     @GetMapping("/{categoryId}/fields")
     public KgpResult<List<PlanField>> getPlanFields(@PathVariable String categoryId){
-        List<PlanField> insertResult = planFieldService.getPlanFields(categoryId);
-        return ObjectUtil.isNull(insertResult) ? KgpResult.failed(KgpResultCode.SYSTEM_EXECUTION_ERROR) : KgpResult.success(insertResult);
+        List<PlanField> result = null;
+        result = planFieldService.getPlanFields(categoryId);
+        return KgpResult.success(result);
     }
 
 }

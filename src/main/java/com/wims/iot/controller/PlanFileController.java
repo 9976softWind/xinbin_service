@@ -5,10 +5,7 @@ import com.wims.iot.common.result.KgpResult;
 import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.service.IPlanFileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -26,10 +23,36 @@ public class PlanFileController {
     IPlanFileService planFileService;
 
     @PostMapping
-    public KgpResult<PlanFile> addPlanFile(@RequestBody PlanFile planFile){
+    public KgpResult<Boolean> addPlanFile(@RequestBody PlanFile planFile){
         try {
-            PlanFile insertResult = planFileService.addPlanFile(planFile);
-            return KgpResult.success(insertResult);
+            return KgpResult.judge(planFileService.addPlanFile(planFile));
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public KgpResult<Boolean> deletePlanFile(@PathVariable String id){
+        try {
+            return  KgpResult.judge(planFileService.deletePlanFile(id)) ;
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public KgpResult<Boolean> setPlanFileBasicInfo(@PathVariable String id,@RequestBody PlanFile planFile){
+        try {
+            return KgpResult.judge(planFileService.setPlanFileBasicInfo(id,planFile)) ;
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
+    }
+
+    @PutMapping("/{id}/entityAttributes")
+    public KgpResult<Boolean> setPlanFileEntityInfo(@PathVariable String id,@RequestBody String entityInfo){
+        try {
+            return KgpResult.judge(planFileService.setPlanFileEntityInfo(id,entityInfo)) ;
         } catch (KGBusinessException e){
             return KgpResult.failed(e.getResultCode());
         }

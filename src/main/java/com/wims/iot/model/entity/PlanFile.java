@@ -70,6 +70,11 @@ public class PlanFile implements Serializable {
     private String entityCategoryId;
 
     /**
+     * 文件主体属性
+     */
+    private String entityCategoryProperty;
+
+    /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

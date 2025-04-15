@@ -1,8 +1,7 @@
 package com.wims.iot.service;
 
-import com.wims.iot.model.entity.PlanField;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.wims.iot.model.vo.PlanFieldVo;
+import com.wims.iot.model.entity.PlanField;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ import java.util.List;
  */
 public interface IPlanFieldService extends IService<PlanField> {
 
-    PlanFieldVo addPlanField(String categoryId, PlanField planField);
+    Boolean addPlanField(String categoryId, PlanField planField);
 
     List<PlanField> getPlanFields(String categoryId);
 }

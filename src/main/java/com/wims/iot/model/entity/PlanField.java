@@ -69,7 +69,7 @@ public class PlanField implements Serializable {
     /**
      * 显示顺序
      */
-    private Integer order;
+    private Integer sort;
 
     /**
      * 字段描述或提示信息
