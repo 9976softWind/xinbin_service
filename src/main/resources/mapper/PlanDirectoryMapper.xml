@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wims.iot.mapper.PlanDirectoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanDirectory">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="parent_id" property="parentId" />
+        <result column="tree_path" property="treePath" />
+        <result column="sort" property="sort" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, parent_id, tree_path, sort, created_at, updated_at
+    </sql>
+
+    <select id="getPlanDirectoryPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List">
+        </include>
+        from t_plan_directory t
+        <where>
+            <if test="query.parentId !=null">
+                and t.parent_id = #{query.parentId}
+            </if>
+            <if test="query.name !=null">
+                and t.name like CONCAT('%',#{query.name},'%')
+            </if>
+        </where>
+        <if test="query.sortBy != null and query.sortBy != ''">
+            ORDER BY ${query.sortBy}
+            <choose>
+                <when test="query.sortOrder != null and query.sortOrder.toUpperCase() == 'DESC'">
+                    DESC
+                </when>
+                <otherwise>
+                    ASC
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+</mapper>

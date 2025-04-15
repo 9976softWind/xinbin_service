@@ -1,6 +1,5 @@
 package com.wims.iot.core.security.config;
 
-import com.wims.iot.filter.VerifyCodeFilter;
 import com.wims.iot.service.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,8 +16,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
 
 import javax.annotation.Resource;
@@ -64,8 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 // 指定某些接口不需要通过验证即可访问。像登陆、注册接口肯定是不需要认证的
 //                .antMatchers(SecurityConstants.LOGIN_PATH).permitAll()
-                .antMatchers("/api/v1/auth/**").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/v1/*").permitAll()
+//                .anyRequest().authenticated()
                 .and().formLogin()
                 //登录页面 不设限访问
 //                .loginPage("/login.html")
@@ -82,9 +79,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 禁用session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // 将我们自定义的认证过滤器替换掉默认的认证过滤器
-        http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(authFilter, FilterSecurityInterceptor.class);
-        http.addFilterBefore(new VerifyCodeFilter(), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(authFilter, FilterSecurityInterceptor.class);
+//        http.addFilterBefore(new VerifyCodeFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

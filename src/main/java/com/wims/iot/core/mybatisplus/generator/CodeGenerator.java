@@ -20,7 +20,7 @@ public class CodeGenerator {
         String username = "root";
         String password = "hhubrain";
 
-        String url = "jdbc:mysql://localhost:3306/xinbin_card?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai";
+        String url = "jdbc:mysql://localhost:3306/kgi?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai";
         DataSourceConfig.Builder dataSourceConfig = new DataSourceConfig.Builder(url, username, password);
 
         //String finalProjectPath = System.getProperty("user.dir"); //当前项目根目录
