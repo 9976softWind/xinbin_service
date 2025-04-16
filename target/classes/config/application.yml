@@ -2,7 +2,7 @@ spring:
   application:
     name: iot
   profiles:
-    active: dev
+    active: kgp
 springdoc:
   swagger-ui: /sss
   packagesToScan: com.wims.iot.controller
@@ -10,9 +10,9 @@ springdoc:
 
 
 server:
-  port: 9000  #端口号
+  port: 8080  #端口号
   servlet:
-    context-path: /iot  #项目名称
+    context-path:   #项目名称
 
 knife4j:
   enable: true  #开启knife4j增强

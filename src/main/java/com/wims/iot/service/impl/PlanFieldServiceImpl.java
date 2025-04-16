@@ -6,10 +6,7 @@ import com.wims.iot.common.exception.KGBusinessException;
 import com.wims.iot.common.result.KgpResultCode;
 import com.wims.iot.common.util.RandomStringGenerator;
 import com.wims.iot.mapper.PlanFieldMapper;
-import com.wims.iot.model.entity.CategoryField;
-import com.wims.iot.model.entity.PlanCategory;
 import com.wims.iot.model.entity.PlanField;
-import com.wims.iot.service.ICategoryFieldService;
 import com.wims.iot.service.IPlanCategoryService;
 import com.wims.iot.service.IPlanFieldService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +31,6 @@ public class PlanFieldServiceImpl extends ServiceImpl<PlanFieldMapper, PlanField
     @Autowired
     IPlanCategoryService planCategoryService;
 
-    @Autowired
-    ICategoryFieldService categoryFieldService;
 
     @Override
     @Transactional
@@ -46,13 +41,8 @@ public class PlanFieldServiceImpl extends ServiceImpl<PlanFieldMapper, PlanField
         planField.setCategoryId(categoryId);
         planField.setFieldId("field_" + RandomStringGenerator.generate(6));
         planField.setCreatedAt(new Date());
-        boolean insertSuccess = this.baseMapper.insert(planField) == 1;
-        if(insertSuccess){
-            CategoryField categoryField = new CategoryField();
-            PlanCategory planCateGory = planCategoryService.getPlanCateGory(categoryId);
-            categoryField.setCategoryId(planCateGory.getId());
-            categoryField.setFieldId(planField.getId());
-            return categoryFieldService.addCategoryField(categoryField);
+        if(this.baseMapper.insert(planField) == 1){
+            return true;
         }else{
             throw new KGBusinessException(KgpResultCode.SYSTEM_EXECUTION_ERROR);
         }
@@ -62,10 +52,7 @@ public class PlanFieldServiceImpl extends ServiceImpl<PlanFieldMapper, PlanField
 
     @Override
     public List<PlanField> getPlanFields(String categoryId) {
-        PlanCategory planCateGory = planCategoryService.getPlanCateGory(categoryId);
-        List<Integer> fieldsByCategoryIds = categoryFieldService.getFieldsByCategoryId(planCateGory.getId());
-        List<PlanField> planFields = this.baseMapper.selectList(new QueryWrapper<PlanField>().in("id", fieldsByCategoryIds));
-        return planFields;
+        return this.baseMapper.selectList(new QueryWrapper<PlanField>().eq("category_id", categoryId));
     }
 
     private boolean hasReName(String categoryId,String name) {
