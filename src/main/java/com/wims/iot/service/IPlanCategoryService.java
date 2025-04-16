@@ -19,4 +19,5 @@ public interface IPlanCategoryService extends IService<PlanCategory> {
 
     PlanCategory getPlanCateGory(String categoryId);
 
+    Boolean deletePlanCategory(String categoryId, Boolean force);
 }

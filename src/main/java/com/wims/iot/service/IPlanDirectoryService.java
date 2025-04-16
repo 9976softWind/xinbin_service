@@ -25,7 +25,7 @@ public interface IPlanDirectoryService extends IService<PlanDirectory> {
 
     Boolean deletePlanDirectory(String directoryId, Boolean isForce);
 
-    PlanDirectory transferPlanDirectory(String directoryId, String newParentId);
+    Boolean transferPlanDirectory(String directoryId, String newParentId);
 
     IPage<PlanFile> getPlanDirectoryFileList( PlanDirectoryFileQuery query);
 }

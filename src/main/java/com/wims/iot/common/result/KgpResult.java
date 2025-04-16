@@ -20,7 +20,7 @@ public class KgpResult<T> implements Serializable {
     private String message;
 
     public static <T> KgpResult<T> success() {
-        return success(null);
+        return success("操作成功");
     }
 
     public static <T> KgpResult<T> success(T data) {
@@ -29,6 +29,10 @@ public class KgpResult<T> implements Serializable {
         result.setMessage(KgpResultCode.SYSTEM_EXECUTION_SUCCESS.getMsg());
         result.setData(data);
         return result;
+    }
+
+    public static <T> KgpResult<T> success(String msg) {
+        return result(KgpResultCode.SYSTEM_EXECUTION_SUCCESS.getCode(), msg, null);
     }
 
     public static <T> KgpResult<T> failed() {

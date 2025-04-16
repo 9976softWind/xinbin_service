@@ -28,6 +28,7 @@ public enum KgpResultCode implements IResultCode, Serializable  {
 
     FIELD_NAME_CONFLICT("FIELD_NAME_CONFLICT","该类别下已存在同名的字段"),
 
+    CATEGORY_IN_USE("CATEGORY_IN_USE","该类别已被预案文件关联，无法删除。如需强制删除请设置 force=true"),
 
     SYSTEM_EXECUTION_ERROR("SYSTEM_EXECUTION_ERROR", "操作失败");
 

@@ -106,7 +106,7 @@ public class PlanFileServiceImpl extends ServiceImpl<PlanFileMapper, PlanFile> i
     public PlanCategoryVo getPlanFileCategoryInfo(String id) {
         PlanFile planFile = this.baseMapper.selectOne(new QueryWrapper<PlanFile>().eq("id", id));
         PlanCategoryVo planCategoryVo = null;
-        if(ObjectUtil.isNull(planFile)){
+        if(ObjectUtil.isNull(planFile) || ObjectUtil.isNull(planFile.getEntityCategoryId())){
             return planCategoryVo;
         }else{
             planCategoryVo = this.baseMapper.getPlanFileCategoryInfo(planFile.getEntityCategoryId());
@@ -122,8 +122,26 @@ public class PlanFileServiceImpl extends ServiceImpl<PlanFileMapper, PlanFile> i
     }
 
     @Override
+    public Boolean transferPlanDirectory(String directoryId, String newDirectoryId) {
+        Long total = this.baseMapper.selectCount(new QueryWrapper<PlanFile>().eq("directory_id", directoryId));
+        if(total == 0){
+            return true;
+        }
+        PlanFile planFile = new PlanFile();
+        planFile.setDirectoryId(newDirectoryId);
+        planFile.setUpdatedAt(new Date());
+        int updateCount = this.baseMapper.update(planFile, new QueryWrapper<PlanFile>().eq("directory_id", directoryId));
+        return total.equals((long) updateCount);
+    }
+
+    @Override
     public Boolean isDirHasFiles(String directoryId) {
         return this.baseMapper.exists(new QueryWrapper<PlanFile>().eq("directory_id",directoryId));
+    }
+
+    @Override
+    public Boolean hasRelevanceFiles(String categoryId) {
+        return this.baseMapper.exists(new QueryWrapper<PlanFile>().eq("entity_category_id",categoryId));
     }
 
     public Boolean isFileHasAdded(String fileId ){

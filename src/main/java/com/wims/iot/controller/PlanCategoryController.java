@@ -51,9 +51,20 @@ public class PlanCategoryController {
         } catch (KGBusinessException e){
             return KgpResult.failed(e.getResultCode());
         }
-
-
     }
 
-
+    /**
+     * 删除不再需要的预案类别。默认情况下，如果类别已被文件关联，则不允许删除
+     * @param categoryId 要删除的类别 ID
+     * @param force 是否强制删除（即使有关联文件，谨慎使用）,默认False
+     * @return
+     */
+    @DeleteMapping("/{categoryId}")
+    public KgpResult<Boolean> deletePlanCategory(@PathVariable String categoryId,@RequestParam(value = "force") Boolean force){
+        try {
+            return KgpResult.judge(planCategoryService.deletePlanCategory(categoryId,force));
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
+    }
 }

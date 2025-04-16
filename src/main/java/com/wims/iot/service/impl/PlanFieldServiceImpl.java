@@ -28,10 +28,6 @@ import java.util.List;
 public class PlanFieldServiceImpl extends ServiceImpl<PlanFieldMapper, PlanField> implements IPlanFieldService {
 
 
-    @Autowired
-    IPlanCategoryService planCategoryService;
-
-
     @Override
     @Transactional
     public Boolean addPlanField(String categoryId, PlanField planField) {

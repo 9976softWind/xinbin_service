@@ -1,11 +1,9 @@
 package com.wims.iot.controller;
 
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wims.iot.common.exception.KGBusinessException;
 import com.wims.iot.common.result.KgPageResult;
 import com.wims.iot.common.result.KgpResult;
-import com.wims.iot.common.result.KgpResultCode;
 import com.wims.iot.model.entity.PlanDirectory;
 import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.model.query.PlanDirectoryFileQuery;
@@ -112,7 +110,7 @@ public class PlanDirectoryController {
      * @return
      */
     @DeleteMapping("/{directoryId}")
-    public KgpResult<PlanDirectory> deletePlanDirectory(@PathVariable String directoryId, @RequestParam(value = "force",required = false) Boolean isForce){
+    public KgpResult<Boolean> deletePlanDirectory(@PathVariable String directoryId, @RequestParam(value = "force") Boolean isForce){
         try {
             return KgpResult.judge(planDirectoriesService.deletePlanDirectory(directoryId, isForce));
         } catch (KGBusinessException e){
@@ -120,10 +118,14 @@ public class PlanDirectoryController {
         }
     }
 
+
     @PutMapping("/{directoryId}/move")
-    public KgpResult<PlanDirectory> transferPlanDirectory(@PathVariable String directoryId,@RequestParam(value = "newParentId") String newParentId ){
-        PlanDirectory transferResult = planDirectoriesService.transferPlanDirectory(directoryId,newParentId);
-        return ObjectUtil.isNull(transferResult) ? KgpResult.failed(KgpResultCode.SYSTEM_EXECUTION_ERROR) : KgpResult.success(transferResult);
+    public KgpResult<Boolean> transferPlanDirectory(@PathVariable String directoryId,@RequestParam(value = "newDirectoryId") String newDirectoryId ){
+        try {
+            return KgpResult.judge(planDirectoriesService.transferPlanDirectory(directoryId, newDirectoryId));
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
     }
 
 

@@ -25,6 +25,13 @@ public interface IPlanFileService extends IService<PlanFile> {
      */
     Boolean isDirHasFiles(String directoryId);
 
+    /**
+     * 判断预案类别是否有关联的文件
+     * @param categoryId 类别id
+     * @return
+     */
+    Boolean hasRelevanceFiles(String categoryId);
+
     Boolean deletePlanFile(String fileId);
 
     Boolean setPlanFileBasicInfo(String id, PlanFile planFile);
@@ -34,4 +41,6 @@ public interface IPlanFileService extends IService<PlanFile> {
     PlanCategoryVo getPlanFileCategoryInfo(String id);
 
     IPage<PlanFile> getPlanDirectoryFileList(PlanDirectoryFileQuery query);
+
+    Boolean transferPlanDirectory(String directoryId, String newDirectoryId);
 }

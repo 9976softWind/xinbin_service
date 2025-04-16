@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * <p>
@@ -65,25 +66,24 @@ public class PlanDirectoryServiceImpl extends ServiceImpl<PlanDirectoryMapper, P
 
     @Override
     public Boolean deletePlanDirectory(String directoryId, Boolean isForce) {
-        //TODO:级联删除相关文件，文件关联的主体
         Boolean dirHasFiles = planFileService.isDirHasFiles(directoryId);
-        if(!dirHasFiles) {
-            return this.baseMapper.delete(new QueryWrapper<PlanDirectory>().eq("id", directoryId)) == 1;
-        }else{
-            if(!isForce){
-                throw new KGBusinessException(KgpResultCode.DIRECTORY_NOT_EMPTY);
-            }else{
-                return this.baseMapper.delete(new QueryWrapper<PlanDirectory>().eq("id", directoryId)) != 0;
-            }
+        boolean forceDelete = Optional.ofNullable(isForce).orElse(false);
+        // 非强制删除且目录下有文件时，拒绝删除
+        if (!forceDelete && dirHasFiles) {
+            throw new KGBusinessException(KgpResultCode.DIRECTORY_NOT_EMPTY);
         }
+        // 执行删除（只有两种允许删除的情况：强制删除，或非强制但目录下无文件）
+        return this.baseMapper.delete(new QueryWrapper<PlanDirectory>().eq("id", directoryId)) == 1;
     }
 
     @Override
-    public PlanDirectory transferPlanDirectory(String directoryId, String newParentId) {
-        PlanDirectory directory = this.baseMapper.selectOne(new QueryWrapper<PlanDirectory>().eq("id", directoryId));
-        directory.setUpdatedAt(new Date());
-        boolean transfer = this.update(directory, new QueryWrapper<PlanDirectory>().eq("id", directoryId));
-        return transfer ? directory : null;
+    public Boolean transferPlanDirectory(String directoryId, String newDirectoryId) {
+        Boolean isSuccess = planFileService.transferPlanDirectory(directoryId, newDirectoryId);
+        if(isSuccess){
+            return this.baseMapper.delete(new QueryWrapper<PlanDirectory>().eq("id",directoryId)) == 1;
+        }else{
+            throw new KGBusinessException(KgpResultCode.SYSTEM_EXECUTION_ERROR);
+        }
     }
 
     @Override
