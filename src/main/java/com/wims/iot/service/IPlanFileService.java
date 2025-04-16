@@ -2,6 +2,7 @@ package com.wims.iot.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.model.query.PlanDirectoryFileQuery;
 import com.wims.iot.model.vo.PlanCategoryVo;
@@ -43,4 +44,8 @@ public interface IPlanFileService extends IService<PlanFile> {
     IPage<PlanFile> getPlanDirectoryFileList(PlanDirectoryFileQuery query);
 
     Boolean transferPlanDirectory(String directoryId, String newDirectoryId);
+
+    Boolean sendPlanFile(String id, String recipients, String channel, String message);
+
+    JsonNode previewPlanFile(String id);
 }

@@ -51,16 +51,28 @@ public class PlanFile implements Serializable {
 
     /**
      * 预案优先级
+     * 高
+     * 中
+     * 低
      */
-    private Integer preplanPriority;
+    private String preplanPriority;
 
     /**
      * 灾害类型
+     * 台风、暴雨、暴雪、道路结冰、冰雹、高温、寒潮、大风、大雾
+     * 风暴潮、海浪、海啸、赤潮
+     * 山体崩塌、滑坡、泥石流、地面塌陷
+     * 事故灾难
      */
-    private Integer disasterType;
+    private String disasterType;
 
     /**
      * 适用地区
+     * 舟山市
+     * 定海区
+     * 普陀区
+     * 岱山县
+     * 嵊泗县
      */
     private String applicableArea;
 

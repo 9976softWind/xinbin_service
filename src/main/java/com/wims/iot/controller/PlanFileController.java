@@ -1,5 +1,6 @@
 package com.wims.iot.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.wims.iot.common.exception.KGBusinessException;
 import com.wims.iot.common.result.KgpResult;
 import com.wims.iot.model.entity.PlanFile;
@@ -62,6 +63,36 @@ public class PlanFileController {
     @GetMapping("/{id}/entityCategory")
     public KgpResult<PlanCategoryVo> getPlanFileCategoryInfo(@PathVariable String id){
         return KgpResult.success(planFileService.getPlanFileCategoryInfo(id)) ;
+    }
+
+    /**
+     * 预案发送
+     * @param id    要发送的文件 ID
+     * @param recipients    接收者标识列表（用户 ID、部门 ID、接口地址等）
+     * @param channel 发送渠道
+     * @param message 附带的消息内容
+     * @return
+     */
+    @PostMapping("/{id}/send")
+    public KgpResult<Boolean> sendPlanFile(@PathVariable String id,
+                                           @RequestParam(value = "recipients",required = true) String recipients,
+                                           @RequestParam(value = "channel",required = false) String channel,
+                                           @RequestParam(value = "message",required = false) String message){
+        try {
+            return KgpResult.judge(planFileService.sendPlanFile(id,recipients,channel,message)) ;
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
+    }
+
+    @GetMapping("/{id}/preview")
+    public KgpResult<JsonNode> previewPlanFile(@PathVariable String id){
+        try {
+            return KgpResult.success(planFileService.previewPlanFile(id));
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
+
     }
 
 }

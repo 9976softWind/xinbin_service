@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mysql.cj.util.StringUtils;
@@ -132,6 +133,23 @@ public class PlanFileServiceImpl extends ServiceImpl<PlanFileMapper, PlanFile> i
         planFile.setUpdatedAt(new Date());
         int updateCount = this.baseMapper.update(planFile, new QueryWrapper<PlanFile>().eq("directory_id", directoryId));
         return total.equals((long) updateCount);
+    }
+
+    @Override
+    public Boolean sendPlanFile(String id, String recipients, String channel, String message) {
+        //TODO:预案发送接口
+        return true;
+    }
+
+    @Override
+    public JsonNode previewPlanFile(String id) {
+        ObjectNode result = mapper.createObjectNode();
+        PlanFile planFile = this.baseMapper.selectOne(new QueryWrapper<PlanFile>().eq("id", id));
+        ColFile colFile = colFileService.getColFileById(planFile.getFileId());
+        String fileUrl = colFile.getFilepath();
+        result.put("previewUrl",fileUrl);
+        result.put("expiresIn",-1);
+        return result;
     }
 
     @Override
