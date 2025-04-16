@@ -1,6 +1,8 @@
 package com.wims.iot.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mysql.cj.util.StringUtils;
 import com.wims.iot.common.exception.KGBusinessException;
@@ -8,6 +10,7 @@ import com.wims.iot.common.result.KgpResultCode;
 import com.wims.iot.common.util.RandomStringGenerator;
 import com.wims.iot.mapper.PlanCategoryMapper;
 import com.wims.iot.model.entity.PlanCategory;
+import com.wims.iot.model.query.PlanCategoryQuery;
 import com.wims.iot.service.IPlanCategoryService;
 import com.wims.iot.service.IPlanFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,13 @@ public class PlanCategoryServiceImpl extends ServiceImpl<PlanCategoryMapper, Pla
 
     @Autowired
     IPlanFileService planFileService;
+
+    @Override
+    public IPage<PlanCategory> getPlanCategoryList(PlanCategoryQuery query) {
+        Page<PlanCategory> page = new Page<>(query.getPage(), query.getPageSize());
+        this.baseMapper.getPlanCategoryList(page,query);
+        return page;
+    }
 
     @Override
     public Boolean addPlanCategory(String name, String description) {

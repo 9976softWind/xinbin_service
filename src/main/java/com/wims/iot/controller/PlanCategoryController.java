@@ -1,8 +1,11 @@
 package com.wims.iot.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wims.iot.common.exception.KGBusinessException;
+import com.wims.iot.common.result.KgPageResult;
 import com.wims.iot.common.result.KgpResult;
 import com.wims.iot.model.entity.PlanCategory;
+import com.wims.iot.model.query.PlanCategoryQuery;
 import com.wims.iot.service.IPlanCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,20 @@ public class PlanCategoryController {
 
     @Autowired
     IPlanCategoryService planCategoryService;
+
+
+    @GetMapping
+    public KgPageResult<PlanCategory> getPlanCategoryList(@RequestParam(value = "name",required = false) String name,
+                                                          @RequestParam(value = "page",required = true) Integer page,
+                                                          @RequestParam(value = "pageSize",required = true) Integer pageSize){
+        PlanCategoryQuery query = new PlanCategoryQuery();
+        query.setName(name);
+        query.setPage(page);
+        query.setPageSize(pageSize);
+        IPage<PlanCategory> result = planCategoryService.getPlanCategoryList(query);
+        return KgPageResult.success(result);
+    }
+
 
     /**
      * 新增预案类别（主体）

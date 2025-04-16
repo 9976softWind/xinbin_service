@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wims.iot.mapper.PlanExeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanExe">
+        <result column="id" property="id" />
+        <result column="plan_file_id" property="planFileId" />
+        <result column="plan_file_name" property="planFileName" />
+        <result column="status" property="status" />
+        <result column="executor" property="executor" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="last_feed_back_time" property="lastFeedBackTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, plan_file_id, plan_file_name, status, executor, start_time, end_time, last_feed_back_time
+    </sql>
+
+    <select id="getPlanExeList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_plan_exe t
+        <where>
+            <if test="query.planFileId != null">
+                and t.plan_file_id = #{query.planFileId}
+            </if>
+            <if test="query.status != null">
+                and t.status = #{query.status}
+            </if>
+            <if test="query.executor != null">
+                and ( JSON_EXTRACT(t.executor, '$.id') LIKE CONCAT('%', #{query.executor}, '%'))
+            </if>
+            <if test="query.startTime != null">
+                and t.start_time &gt;= #{query.startTime}
+            </if>
+            <if test="query.endTime != null">
+                and t.end_time &lt;= #{query.endTime}
+            </if>
+        </where>
+        <if test="query.sortBy != null and query.sortBy != ''">
+            ORDER BY ${query.sortBy}
+            <choose>
+                <when test="query.sortOrder != null and query.sortOrder.toUpperCase() == 'DESC'">
+                    DESC
+                </when>
+                <otherwise>
+                    ASC
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+</mapper>

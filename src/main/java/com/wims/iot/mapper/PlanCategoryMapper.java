@@ -1,7 +1,9 @@
 package com.wims.iot.mapper;
 
-import com.wims.iot.model.entity.PlanCategory;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wims.iot.model.entity.PlanCategory;
+import com.wims.iot.model.query.PlanCategoryQuery;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -15,4 +17,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface PlanCategoryMapper extends BaseMapper<PlanCategory> {
 
+    Page<PlanCategory>  getPlanCategoryList(Page<PlanCategory> page, PlanCategoryQuery query);
 }

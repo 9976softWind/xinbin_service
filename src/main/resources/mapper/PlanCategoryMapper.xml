@@ -17,4 +17,17 @@
         id, category_id, name, description, create_at, update_at
     </sql>
 
+    <select id="getPlanCategoryList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List">
+        </include>
+        from t_plan_category t
+        <where>
+            <if test="query.name !=null">
+                and t.name like CONCAT('%',#{query.name},'%')
+            </if>
+        </where>
+    </select>
+
+
 </mapper>

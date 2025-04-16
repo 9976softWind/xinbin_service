@@ -30,6 +30,8 @@ public enum KgpResultCode implements IResultCode, Serializable  {
 
     CATEGORY_IN_USE("CATEGORY_IN_USE","该类别已被预案文件关联，无法删除。如需强制删除请设置 force=true"),
 
+    UPDATE_EXE_STATUS_ERROR("UPDATE_EXE_STATUS_ERROR","更新执行实例的状态失败"),
+
     SYSTEM_EXECUTION_ERROR("SYSTEM_EXECUTION_ERROR", "操作失败");
 
 

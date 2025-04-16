@@ -50,7 +50,7 @@ public class PlanDirectoryServiceImpl extends ServiceImpl<PlanDirectoryMapper, P
         planDirectory.setId("dir_" + RandomStringGenerator.generate(6));
         planDirectory.setName(name);
         planDirectory.setCreatedAt(new Date());
-        return this.baseMapper.insert(planDirectory) == 1 ? true : false;
+        return this.baseMapper.insert(planDirectory) == 1 ;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class PlanDirectoryServiceImpl extends ServiceImpl<PlanDirectoryMapper, P
         PlanDirectory planDirectory = new PlanDirectory();
         planDirectory.setName(name);
         planDirectory.setUpdatedAt(new Date());
-        return this.baseMapper.update(planDirectory, new QueryWrapper<PlanDirectory>().eq("id", directoryId)) == 1 ? true : false;
+        return this.baseMapper.update(planDirectory, new QueryWrapper<PlanDirectory>().eq("id", directoryId)) == 1 ;
     }
 
     @Override
