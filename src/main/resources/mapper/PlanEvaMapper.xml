@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wims.iot.mapper.PlanEvaMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanEva">
+        <id column="id" property="id" />
+        <result column="exe_id" property="exeId" />
+        <result column="completeness_id" property="completenessId" />
+        <result column="continuous_id" property="continuousId" />
+        <result column="effect_id" property="effectId" />
+        <result column="risk_id" property="riskId" />
+        <result column="total_points" property="totalPoints" />
+        <result column="comments" property="comments" />
+        <result column="evaluator" property="evaluator" />
+        <result column="evaluated_at" property="evaluatedAt" />
+    </resultMap>
+
+    <resultMap id="PlanEvaResuleMap" type="com.wims.iot.model.vo.PlanEvaVo">
+<!--        <id property="id" column="eva_id"/>-->
+        <association property="planEva" javaType="com.wims.iot.model.entity.PlanEva">
+            <id property="id" column="eva_id"/>
+            <result property="exeId" column="eva_exe_id"/>
+            <result property="completenessId" column="eva_completeness_id"/>
+            <result property="continuousId" column="eva_continuous_id"/>
+            <result property="effectId" column="eva_effect_id"/>
+            <result property="riskId" column="eva_risk_id"/>
+            <result property="totalPoints" column="eva_total_points"/>
+            <result property="comments" column="eva_comments"/>
+            <result property="evaluator" column="eva_evaluator"/>
+            <result property="evaluatedAt" column="eva_evaluated_at"/>
+        </association>
+        <association property="planEvaCompleteness" javaType="com.wims.iot.model.entity.PlanEvaCompleteness">
+            <id property="completenessId" column="tcompleteness_completeness_id"/>
+            <result property="goalSettingPoints" column="tcompleteness_goal_setting_points"/>
+            <result property="riskIdentificationPoints" column="tcompleteness_risk_identification_points"/>
+            <result property="copingMeasuresPoints" column="tcompleteness_coping_measures_points"/>
+            <result property="resourceAllocationPoints" column="tcompleteness_resource_allocation_points"/>
+            <result property="responsibilityDivisionPoints" column="tcompleteness_responsibility_division_points"/>
+            <result property="totalPoints" column="tcompleteness_total_points"/>
+        </association>
+        <association property="planEvaContinuous" javaType="com.wims.iot.model.entity.PlanEvaContinuous">
+            <id property="continuousId" column="tcontinuous_continuous_id"/>
+            <result property="timeContinuityPoints" column="tcontinuous_time_continuity_points"/>
+            <result property="spatialContinuityPoints" column="tcontinuous_spatial_continuity_points"/>
+            <result property="totalPoints" column="tcontinuous_total_points"/>
+        </association>
+        <association property="planEvaEffect" javaType="com.wims.iot.model.entity.PlanEvaEffect">
+            <id property="effectId" column="teffect_effect_id"/>
+            <result property="disasterLossControlPointsPoints" column="teffect_disaster_loss_control_points_points"/>
+            <result property="emergencyResponseSpeedPoints" column="teffect_emergency_response_speed_points"/>
+            <result property="emergencyResponseEfficiencyPoints" column="teffect_emergency_response_efficiency_points"/>
+            <result property="publicSatisfactionPoints" column="teffect_public_satisfaction_points"/>
+            <result property="totalPoints" column="teffect_total_points"/>
+        </association>
+        <association property="planEvaRisk" javaType="com.wims.iot.model.entity.PlanEvaRisk">
+            <id property="riskId" column="trisk_risk_id"/>
+            <result property="resourceShortagePoints" column="trisk_resource_shortage_points"/>
+            <result property="personnelInjuryPoints" column="trisk_personnel_injury_points"/>
+            <result property="facilityDamagePoints" column="trisk_facility_damage_points"/>
+            <result property="publicPanicPoints" column="trisk_public_panic_points"/>
+            <result property="totalPoints" column="trisk_total_points"/>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, exe_id, completeness_id, continuous_id, effect_id, risk_id, total_points, comments, evaluator, evaluated_at
+    </sql>
+
+    <select id="getPlanFileEva" resultMap="PlanEvaResuleMap">
+
+        select
+            eva.id AS eva_id,
+            eva.exe_id AS eva_exe_id,
+            eva.completeness_id AS eva_completeness_id,
+            eva.continuous_id AS eva_continuous_id,
+            eva.effect_id AS eva_effect_id,
+            eva.risk_id AS eva_risk_id,
+            eva.total_points AS eva_total_points,
+            eva.comments AS eva_comments,
+            eva.evaluator AS eva_evaluator,
+            eva.evaluated_at AS eva_evaluated_at,
+            tcompleteness.completeness_id  as tcompleteness_completeness_id,
+            tcompleteness.goal_setting_points as tcompleteness_goal_setting_points,
+            tcompleteness.risk_identification_points as tcompleteness_risk_identification_points,
+            tcompleteness.coping_measures_points as tcompleteness_coping_measures_points,
+            tcompleteness.resource_allocation_points as tcompleteness_resource_allocation_points,
+            tcompleteness.responsibility_division_points as tcompleteness_responsibility_division_points,
+            tcompleteness.total_points as tcompleteness_total_points,
+            tcontinuous.continuous_id as tcontinuous_continuous_id,
+            tcontinuous.time_continuity_points as tcontinuous_time_continuity_points,
+            tcontinuous.spatial_continuity_points as tcontinuous_spatial_continuity_points,
+            tcontinuous.total_points as tcontinuous_total_points,
+            teffect.effect_id as teffect_effect_id,
+            teffect.disaster_loss_control_points_points as teffect_disaster_loss_control_points_points,
+            teffect.emergency_response_speed_points as teffect_emergency_response_speed_points,
+            teffect.emergency_response_efficiency_points as teffect_emergency_response_efficiency_points,
+            teffect.public_satisfaction_points as teffect_public_satisfaction_points,
+            teffect.total_points as teffect_total_points,
+            trisk.risk_id as trisk_risk_id,
+            trisk.resource_shortage_points as trisk_resource_shortage_points,
+            trisk.personnel_injury_points as trisk_personnel_injury_points,
+            trisk.facility_damage_points as trisk_facility_damage_points,
+            trisk.public_panic_points as trisk_public_panic_points,
+            trisk.total_points as trisk_total_points
+        from
+            t_plan_eva eva
+                left join t_plan_eva_completeness tcompleteness on eva.completeness_id = tcompleteness.completeness_id
+                left join t_plan_eva_continuous tcontinuous on tcontinuous.continuous_id = eva.continuous_id
+                left join t_plan_eva_effect teffect on teffect.effect_id = eva.effect_id
+                left join t_plan_eva_risk trisk on trisk.risk_id = eva.risk_id
+    </select>
+</mapper>

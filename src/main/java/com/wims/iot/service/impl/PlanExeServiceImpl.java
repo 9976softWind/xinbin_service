@@ -4,10 +4,20 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mysql.cj.util.StringUtils;
+import com.wims.iot.common.exception.KGBusinessException;
+import com.wims.iot.common.result.KgpResultCode;
+import com.wims.iot.common.util.RandomStringGenerator;
 import com.wims.iot.mapper.PlanExeMapper;
+import com.wims.iot.model.entity.ColFile;
 import com.wims.iot.model.entity.PlanExe;
-import com.wims.iot.model.query.PlanExeQuery;
+import com.wims.iot.model.entity.PlanFile;
+import com.wims.iot.model.query.PlanFileExeFeedBackQuery;
+import com.wims.iot.model.vo.PlanFileExeFeedBackVo;
+import com.wims.iot.service.IColFileService;
 import com.wims.iot.service.IPlanExeService;
+import com.wims.iot.service.IPlanFileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,17 +33,19 @@ import java.util.Date;
 @Service
 public class PlanExeServiceImpl extends ServiceImpl<PlanExeMapper, PlanExe> implements IPlanExeService {
 
-    @Override
-    public IPage<PlanExe> getPlanExeList(PlanExeQuery query) {
-        Page<PlanExe> page = new Page<>(query.getPage(), query.getPageSize());
-        this.baseMapper.getPlanExeList(page,query);
-        return page;
-    }
+    @Autowired
+    IPlanFileService planFileService;
+
+    @Autowired
+    IColFileService colFileService;
 
     @Override
     public Boolean updateStatus(String executionId, String exeStatus) {
         PlanExe planExe = new PlanExe();
         planExe.setStatus(exeStatus);
+        if("completed".equals(exeStatus) || "failed".equals(exeStatus)){
+            planExe.setEndTime(new Date());
+        }
         planExe.setLastFeedBackTime(new Date());
         return this.baseMapper.update(planExe,new QueryWrapper<PlanExe>().eq("id",executionId)) == 1;
     }
@@ -43,6 +55,30 @@ public class PlanExeServiceImpl extends ServiceImpl<PlanExeMapper, PlanExe> impl
         PlanExe planExe = new PlanExe();
         planExe.setLastFeedBackTime(new Date());
         return this.baseMapper.update(planExe,new QueryWrapper<PlanExe>().eq("id",executionId)) == 1;
+    }
+
+    @Override
+    public IPage<PlanFileExeFeedBackVo> getPlanFileExeFeedBackList(PlanFileExeFeedBackQuery query) {
+        Page<PlanFileExeFeedBackVo> page = new Page<>(query.getPage(), query.getPageSize());
+        this.baseMapper.getPlanFileExeFeedBackList(page,query);
+        return page;
+    }
+
+    @Override
+    public Boolean planFileExec(String planFileId, String executor) {
+        PlanFile planFileById = planFileService.getPlanFileById(planFileId);
+        ColFile colFileById = colFileService.getColFileById(planFileById.getFileId());
+        PlanExe planExe = new PlanExe();
+        planExe.setId("exe_" + RandomStringGenerator.generate(6));
+        planExe.setStatus("running");
+        planExe.setPlanFileId(planFileId);
+        planExe.setPlanFileName(StringUtils.isNullOrEmpty(colFileById.getFilename()) ? null : colFileById.getFilename());
+        planExe.setStartTime(new Date());
+        if(this.baseMapper.insert(planExe) == 1){
+            return true;
+        }else{
+            throw new KGBusinessException(KgpResultCode.SYSTEM_EXECUTION_ERROR);
+        }
     }
 
 }

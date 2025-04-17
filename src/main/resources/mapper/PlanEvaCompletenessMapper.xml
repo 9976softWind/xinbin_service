@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wims.iot.mapper.PlanEvaCompletenessMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanEvaCompleteness">
+        <id column="completeness_id" property="completenessId" />
+        <result column="goal_setting_points" property="goalSettingPoints" />
+        <result column="risk_identification_points" property="riskIdentificationPoints" />
+        <result column="coping_measures_points" property="copingMeasuresPoints" />
+        <result column="resource_allocation_points" property="resourceAllocationPoints" />
+        <result column="responsibility_division_points" property="responsibilityDivisionPoints" />
+        <result column="total_points" property="totalPoints" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        completeness_id, goal_setting_points, risk_identification_points, coping_measures_points, resource_allocation_points, responsibility_division_points, total_points
+    </sql>
+
+</mapper>

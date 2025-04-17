@@ -50,6 +50,11 @@ public class PlanFileServiceImpl extends ServiceImpl<PlanFileMapper, PlanFile> i
     private final ObjectMapper mapper;
 
     @Override
+    public PlanFile getPlanFileById(String id) {
+        return this.baseMapper.selectOne(new QueryWrapper<PlanFile>().eq("id",id));
+    }
+
+    @Override
     public Boolean addPlanFile(PlanFile planFile) {
         if(isFileHasAdded(planFile.getFileId())){
             throw new KGBusinessException(KgpResultCode.FILE_ADD_CONFLICT);

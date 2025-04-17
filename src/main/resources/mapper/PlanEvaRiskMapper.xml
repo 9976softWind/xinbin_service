@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wims.iot.mapper.PlanEvaRiskMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanEvaRisk">
+        <id column="risk_id" property="riskId" />
+        <result column="resource_shortage_points" property="resourceShortagePoints" />
+        <result column="personnel_injury_points" property="personnelInjuryPoints" />
+        <result column="facility_damage_points" property="facilityDamagePoints" />
+        <result column="public_panic_points" property="publicPanicPoints" />
+        <result column="total_points" property="totalPoints" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        risk_id, resource_shortage_points, personnel_injury_points, facility_damage_points, public_panic_points, total_points
+    </sql>
+
+</mapper>

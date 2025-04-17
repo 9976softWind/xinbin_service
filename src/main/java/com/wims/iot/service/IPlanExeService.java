@@ -1,9 +1,10 @@
 package com.wims.iot.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.wims.iot.model.entity.PlanExe;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.wims.iot.model.query.PlanExeQuery;
+import com.wims.iot.model.entity.PlanExe;
+import com.wims.iot.model.query.PlanFileExeFeedBackQuery;
+import com.wims.iot.model.vo.PlanFileExeFeedBackVo;
 
 /**
  * <p>
@@ -15,9 +16,11 @@ import com.wims.iot.model.query.PlanExeQuery;
  */
 public interface IPlanExeService extends IService<PlanExe> {
 
-    IPage<PlanExe> getPlanExeList(PlanExeQuery query);
-
     Boolean updateStatus(String executionId, String exeStatus);
 
     Boolean updateFeedBackTime(String executionId);
+
+    IPage<PlanFileExeFeedBackVo> getPlanFileExeFeedBackList(PlanFileExeFeedBackQuery query);
+
+    Boolean planFileExec(String planFileId, String executor);
 }

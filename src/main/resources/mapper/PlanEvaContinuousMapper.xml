@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wims.iot.mapper.PlanEvaContinuousMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanEvaContinuous">
+        <id column="continuous_id" property="continuousId" />
+        <result column="time_continuity_points" property="timeContinuityPoints" />
+        <result column="spatial_continuity_points" property="spatialContinuityPoints" />
+        <result column="total_points" property="totalPoints" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        continuous_id, time_continuity_points, spatial_continuity_points, total_points
+    </sql>
+
+</mapper>

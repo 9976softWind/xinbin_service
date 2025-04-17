@@ -32,6 +32,10 @@ public enum KgpResultCode implements IResultCode, Serializable  {
 
     UPDATE_EXE_STATUS_ERROR("UPDATE_EXE_STATUS_ERROR","更新执行实例的状态失败"),
 
+    EVA_RECORD_CONFLICT("EVA_RECORD_CONFLICT","当前执行实例已生成评估报告，请打分"),
+
+    EVA_POINTS_ERROR("EVA_POINTS_ERROR","评估报告打分失败"),
+
     SYSTEM_EXECUTION_ERROR("SYSTEM_EXECUTION_ERROR", "操作失败");
 
 

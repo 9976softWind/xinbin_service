@@ -14,42 +14,99 @@
         <result column="last_feed_back_time" property="lastFeedBackTime" />
     </resultMap>
 
+    <resultMap id="PlanFileExeFeedBackResuleMap" type="com.wims.iot.model.vo.PlanFileExeFeedBackVo">
+
+        <id property="id" column="tpf_id"/>
+        <!-- 一对一关联对象 -->
+        <association property="planFile" javaType="com.wims.iot.model.entity.PlanFile">
+            <id property="id" column="tpf_id"/>
+            <result property="name" column="tpf_name"/>
+            <result property="fileId" column="tpf_file_id"/>
+            <result property="directoryId" column="tpf_directory_id"/>
+            <result property="description" column="tpf_description"/>
+            <result property="preplanPriority" column="tpf_preplan_priority"/>
+            <result property="disasterType" column="tpf_disaster_type"/>
+            <result property="applicableArea" column="tpf_applicable_area"/>
+            <result property="entityCategoryId" column="tpf_entity_category_id"/>
+            <result property="entityCategoryProperty" column="tpf_entity_category_property"/>
+            <result property="createdAt" column="tpf_created_at"/>
+            <result property="updatedAt" column="tpf_updated_at"/>
+        </association>
+
+        <!-- 一对一关联对象 -->
+        <association property="planExe" javaType="com.wims.iot.model.entity.PlanExe">
+            <id property="planFileId" column="tpe_plan_file_id"/>
+            <result property="id" column="tpe_id"/>
+            <result property="planFileName" column="tpe_plan_file_name"/>
+            <result property="status" column="tpe_status"/>
+            <result property="executor" column="tpe_executor"/>
+            <result property="startTime" column="tpe_start_time"/>
+            <result property="endTime" column="tpe_end_time"/>
+            <result property="lastFeedBackTime" column="tpe_last_feed_back_time"/>
+        </association>
+
+        <!-- 一对多关联集合 -->
+        <collection property="feedbackList" ofType="com.wims.iot.model.entity.PlanFeedback">
+            <id property="id" column="tpb_id"/>
+            <result property="exeId" column="tpb_exe_id"/>
+            <result property="feedType" column="tpb_feed_type"/>
+            <result property="content" column="tpb_content"/>
+            <result property="exeStatus" column="tpb_exe_status"/>
+            <result property="releatedFileIds" column="tpb_releated_file_ids"/>
+            <result property="feedBackTime" column="tpb_feed_back_time"/>
+        </collection>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, plan_file_id, plan_file_name, status, executor, start_time, end_time, last_feed_back_time
     </sql>
 
-    <select id="getPlanExeList" resultMap="BaseResultMap">
+    <select id="getPlanFileExeFeedBackList" resultMap="PlanFileExeFeedBackResuleMap">
         select
-        <include refid="Base_Column_List" />
-        from t_plan_exe t
+            tpf.id AS tpf_id,
+            tpf.name AS tpf_name,
+            tpf.file_id AS tpf_file_id,
+            tpf.directory_id AS tpf_directory_id,
+            tpf.description AS tpf_description,
+            tpf.preplan_priority AS tpf_preplan_priority,
+            tpf.disaster_type AS tpf_disaster_type,
+            tpf.applicable_area AS tpf_applicable_area,
+            tpf.entity_category_id AS tpf_entity_category_id,
+            tpf.entity_category_property AS tpf_entity_category_property,
+            tpf.created_at AS tpf_created_at,
+            tpf.updated_at AS tpf_updated_at,
+            tpe.id AS tpe_id,
+            tpe.plan_file_id AS tpe_plan_file_id,
+            tpe.plan_file_name AS tpe_plan_file_name,
+            tpe.status AS tpe_status,
+            tpe.executor AS tpe_executor,
+            tpe.start_time AS tpe_start_time,
+            tpe.end_time AS tpe_end_time,
+            tpe.last_feed_back_time AS tpe_last_feed_back_time,
+            tpb.id AS tpb_id,
+            tpb.exe_id AS tpb_exe_id,
+            tpb.feed_type AS tpb_feed_type,
+            tpb.content AS tpb_content,
+            tpb.exe_status AS tpb_exe_status,
+            tpb.releated_file_ids AS tpb_releated_file_ids,
+            tpb.feed_back_time AS tpb_feed_back_time
+        FROM t_plan_file tpf
+            LEFT JOIN t_plan_exe tpe  ON tpf.id = tpe.plan_file_id
+            LEFT JOIN t_plan_feedback tpb ON tpe.id = tpb.exe_id
         <where>
             <if test="query.planFileId != null">
-                and t.plan_file_id = #{query.planFileId}
-            </if>
-            <if test="query.status != null">
-                and t.status = #{query.status}
-            </if>
-            <if test="query.executor != null">
-                and ( JSON_EXTRACT(t.executor, '$.id') LIKE CONCAT('%', #{query.executor}, '%'))
+                and tpf.id = #{query.planFileId}
             </if>
             <if test="query.startTime != null">
-                and t.start_time &gt;= #{query.startTime}
+                and tpf.created_at &gt;= #{query.startTime}
             </if>
             <if test="query.endTime != null">
-                and t.end_time &lt;= #{query.endTime}
+                and tpf.created_at &lt;= #{query.endTime}
+            </if>
+            <if test="query.status != null">
+                and tpe.status = #{query.status}
             </if>
         </where>
-        <if test="query.sortBy != null and query.sortBy != ''">
-            ORDER BY ${query.sortBy}
-            <choose>
-                <when test="query.sortOrder != null and query.sortOrder.toUpperCase() == 'DESC'">
-                    DESC
-                </when>
-                <otherwise>
-                    ASC
-                </otherwise>
-            </choose>
-        </if>
     </select>
 </mapper>

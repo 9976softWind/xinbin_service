@@ -17,6 +17,8 @@ import com.wims.iot.model.vo.PlanCategoryVo;
  */
 public interface IPlanFileService extends IService<PlanFile> {
 
+    PlanFile getPlanFileById(String id);
+
     Boolean addPlanFile(PlanFile planFile);
 
     /**

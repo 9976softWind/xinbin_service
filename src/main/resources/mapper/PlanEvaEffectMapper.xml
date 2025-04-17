@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wims.iot.mapper.PlanEvaEffectMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wims.iot.model.entity.PlanEvaEffect">
+        <id column="effect_id" property="effectId" />
+        <result column="disaster_loss_control_points_points" property="disasterLossControlPointsPoints" />
+        <result column="emergency_response_speed_points" property="emergencyResponseSpeedPoints" />
+        <result column="emergency_response_efficiency_points" property="emergencyResponseEfficiencyPoints" />
+        <result column="public_satisfaction_points" property="publicSatisfactionPoints" />
+        <result column="total_points" property="totalPoints" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        effect_id, disaster_loss_control_points_points, emergency_response_speed_points, emergency_response_efficiency_points, public_satisfaction_points, total_points
+    </sql>
+
+</mapper>
