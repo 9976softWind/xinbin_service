@@ -3,12 +3,14 @@ package com.wims.iot.converter;
 import com.wims.iot.model.entity.Cata;
 import com.wims.iot.model.form.CataForm;
 import com.wims.iot.model.vo.CataVO;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import javax.annotation.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-10T19:07:20+0800",
+    date = "2025-04-16T14:14:44+0800",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 1.8.0_102 (Oracle Corporation)"
 )
 @Component
@@ -44,8 +46,12 @@ public class CataConverterImpl implements CataConverter {
         cataVO.setName( entity.getName() );
         cataVO.setSort( entity.getSort() );
         cataVO.setStatus( entity.getStatus() );
-        cataVO.setCreateTime( entity.getCreateTime() );
-        cataVO.setUpdateTime( entity.getUpdateTime() );
+        if ( entity.getCreateTime() != null ) {
+            cataVO.setCreateTime( LocalDateTime.ofInstant( entity.getCreateTime().toInstant(), ZoneId.of( "UTC" ) ) );
+        }
+        if ( entity.getUpdateTime() != null ) {
+            cataVO.setUpdateTime( LocalDateTime.ofInstant( entity.getUpdateTime().toInstant(), ZoneId.of( "UTC" ) ) );
+        }
 
         return cataVO;
     }

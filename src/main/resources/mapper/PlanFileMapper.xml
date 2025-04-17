@@ -85,4 +85,19 @@
             </if>
         </where>
     </select>
+
+    <select id="getPlanFileByIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List">
+        </include>
+        from t_plan_file t
+        <where>
+            <if test="query.ids != null and !query.ids.isEmpty()">
+                and t.id in
+                <foreach item="item" collection="query.ids" open="(" separator="," close=")">
+                    <![CDATA[#{item,jdbcType=VARCHAR}]]>
+                </foreach>
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -7,6 +7,7 @@ import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.model.form.FileBindEntityForm;
 import com.wims.iot.model.form.FileEntityForm;
 import com.wims.iot.model.query.PlanDirectoryFileQuery;
+import com.wims.iot.model.query.PlanFileQuery;
 import com.wims.iot.model.vo.PlanCategoryVo;
 
 import java.util.List;
@@ -48,6 +49,8 @@ public interface IPlanFileService extends IService<PlanFile> {
     List<PlanCategoryVo> getPlanFileCategoryInfo(String id);
 
     IPage<PlanFile> getPlanDirectoryFileList(PlanDirectoryFileQuery query);
+
+    IPage<PlanFile> getPlanFileByIds(PlanFileQuery query);
 
     Boolean transferPlanDirectory(String directoryId, String newDirectoryId);
 

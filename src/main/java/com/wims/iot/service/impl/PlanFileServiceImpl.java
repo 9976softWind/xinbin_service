@@ -22,6 +22,7 @@ import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.model.form.FileBindEntityForm;
 import com.wims.iot.model.form.FileEntityForm;
 import com.wims.iot.model.query.PlanDirectoryFileQuery;
+import com.wims.iot.model.query.PlanFileQuery;
 import com.wims.iot.model.vo.PlanCategoryVo;
 import com.wims.iot.service.IColFileService;
 import com.wims.iot.service.IPlanFieldService;
@@ -198,6 +199,14 @@ public class PlanFileServiceImpl extends ServiceImpl<PlanFileMapper, PlanFile> i
         this.baseMapper.getPlanDirectoryFileList(page,query);
         return page;
     }
+
+    @Override
+    public IPage<PlanFile> getPlanFileByIds(PlanFileQuery query) {
+        Page<PlanFile> page = new Page<>(query.getPage(), query.getPageSize());
+        this.baseMapper.getPlanFileByIds(page,query);
+        return page;
+    }
+
 
     @Override
     public Boolean transferPlanDirectory(String directoryId, String newDirectoryId) {
