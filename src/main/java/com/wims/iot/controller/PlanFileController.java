@@ -6,6 +6,7 @@ import com.wims.iot.common.result.KgpResult;
 import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.model.form.FileBindEntityForm;
 import com.wims.iot.model.form.FileEntityForm;
+import com.wims.iot.model.form.PlanFileAddForm;
 import com.wims.iot.model.vo.PlanCategoryVo;
 import com.wims.iot.service.IPlanFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,21 @@ public class PlanFileController {
         }
     }
 
+    @PostMapping("/batch")
+    public KgpResult<Boolean> addPlanFileIntoDic(@RequestBody PlanFileAddForm planFileAddForm){
+        try {
+            return KgpResult.judge(planFileService.addPlanFileIntoDic(planFileAddForm));
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode(),e.getMessage());
+        }
+    }
+
     @DeleteMapping("/{id}")
     public KgpResult<Boolean> deletePlanFile(@PathVariable String id){
         try {
             return  KgpResult.judge(planFileService.deletePlanFile(id)) ;
         } catch (KGBusinessException e){
-            return KgpResult.failed(e.getResultCode());
+            return KgpResult.failed(e.getResultCode(),e.getMessage());
         }
     }
 

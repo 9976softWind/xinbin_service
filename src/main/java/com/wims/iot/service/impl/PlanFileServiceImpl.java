@@ -21,6 +21,7 @@ import com.wims.iot.model.entity.PlanField;
 import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.model.form.FileBindEntityForm;
 import com.wims.iot.model.form.FileEntityForm;
+import com.wims.iot.model.form.PlanFileAddForm;
 import com.wims.iot.model.query.PlanDirectoryFileQuery;
 import com.wims.iot.model.query.PlanFileQuery;
 import com.wims.iot.model.vo.PlanCategoryVo;
@@ -30,6 +31,7 @@ import com.wims.iot.service.IPlanFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -141,6 +143,52 @@ public class PlanFileServiceImpl extends ServiceImpl<PlanFileMapper, PlanFile> i
             throw new KGBusinessException(KgpResultCode.SYSTEM_EXECUTION_ERROR);
         }
     }
+
+    @Override
+    @Transactional
+    public Boolean addPlanFileIntoDic(PlanFileAddForm planFileAddForm) {
+        List<String> fileIds = planFileAddForm.getFileId();
+        PlanFile planFile = new PlanFile();
+        planFile.setDirectoryId(planFileAddForm.getDirectoryId());
+        planFile.setDescription(planFileAddForm.getDescription());
+        planFile.setPreplanPriority(planFileAddForm.getPreplanPriority());
+        planFile.setDisasterType(planFileAddForm.getDisasterType());
+        planFile.setApplicableArea(planFileAddForm.getApplicableArea());
+        ArrayNode categoryIds = mapper.createArrayNode();
+        ObjectNode categoryProperty = mapper.createObjectNode();
+        List<PlanFileAddForm.AttributeDTO> attributes = planFileAddForm.getAttributes();
+        attributes.forEach(attributeDTO -> {
+            String categoryId = attributeDTO.getCategoryId();
+            Map<String, String> fields = attributeDTO.getFields();
+            categoryIds.add(categoryId);
+            ObjectNode property = mapper.createObjectNode();
+            for (Map.Entry<String, String> entry : fields.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                property.put(key,value);
+            }
+            categoryProperty.set(categoryId,property);
+
+        });
+        planFile.setEntityCategoryId(categoryIds.toString());
+        planFile.setEntityCategoryProperty(categoryProperty.toString());
+        planFile.setCreatedAt(new Date());
+
+        for(String fileId:fileIds){
+            ColFile colFileInfo = colFileService.getColFileById(fileId);
+            if(this.baseMapper.exists(new QueryWrapper<PlanFile>().eq("directory_id",planFileAddForm.getDirectoryId()).eq("file_id",fileId))){
+                throw new KGBusinessException(KgpResultCode.FILE_ADD_CONFLICT,KgpResultCode.FILE_ADD_CONFLICT.getMsg() + "：" + colFileInfo.getFilename());
+            }
+            planFile.setId("file_"+ RandomStringGenerator.generate(6));
+            planFile.setName(colFileInfo.getFilename());
+            planFile.setFileId(colFileInfo.getFileId());
+            if(this.baseMapper.insert(planFile) != 1){
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public Boolean setPlanFileEntityInfo(String id, FileEntityForm entityInfo) {
         PlanFile planFile = this.baseMapper.selectOne(new QueryWrapper<PlanFile>().eq("id", id));

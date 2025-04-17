@@ -18,6 +18,10 @@ public class KGBusinessException extends RuntimeException {
         super(errorCode.getMsg());
         this.resultCode = errorCode;
     }
+    public KGBusinessException(KgpResultCode errorCode,String message) {
+        super(message);
+        this.resultCode = errorCode;
+    }
 
     public KGBusinessException(String message){
         super(message);
