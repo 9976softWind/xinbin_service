@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mysql.cj.util.StringUtils;
 import com.wims.iot.common.exception.KGBusinessException;
@@ -16,6 +19,8 @@ import com.wims.iot.mapper.PlanFileMapper;
 import com.wims.iot.model.entity.ColFile;
 import com.wims.iot.model.entity.PlanField;
 import com.wims.iot.model.entity.PlanFile;
+import com.wims.iot.model.form.FileBindEntityForm;
+import com.wims.iot.model.form.FileEntityForm;
 import com.wims.iot.model.query.PlanDirectoryFileQuery;
 import com.wims.iot.model.vo.PlanCategoryVo;
 import com.wims.iot.service.IColFileService;
@@ -25,9 +30,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * <p>
@@ -63,15 +68,6 @@ public class PlanFileServiceImpl extends ServiceImpl<PlanFileMapper, PlanFile> i
         planFile.setId("file_"+ RandomStringGenerator.generate(6));
         planFile.setName(colFileInfo.getFilename());
         planFile.setFileId(colFileInfo.getFileId());
-        if(!StringUtils.isNullOrEmpty(planFile.getEntityCategoryId())){
-            List<PlanField> planFields = planFieldService.getPlanFields(planFile.getEntityCategoryId());
-            List<String> collectFiledName = planFields.stream().map(PlanField::getName).collect(Collectors.toList());
-            ObjectNode entityProperty = mapper.createObjectNode();
-            collectFiledName.forEach(f->{
-                entityProperty.set(f,null);
-            });
-            planFile.setEntityCategoryProperty(entityProperty.toString());
-        }
         planFile.setCreatedAt(new Date());
         if(this.baseMapper.insert(planFile) == 1){
             return true;
@@ -87,37 +83,113 @@ public class PlanFileServiceImpl extends ServiceImpl<PlanFileMapper, PlanFile> i
 
     @Override
     public Boolean setPlanFileBasicInfo(String id, PlanFile planFile) {
-        if(!StringUtils.isNullOrEmpty(planFile.getEntityCategoryId())){
-            List<PlanField> planFields = planFieldService.getPlanFields(planFile.getEntityCategoryId());
-            List<String> collectFiledName = planFields.stream().map(PlanField::getName).collect(Collectors.toList());
-            ObjectNode entityProperty = mapper.createObjectNode();
-            collectFiledName.forEach(f->{
-                entityProperty.set(f,null);
-            });
-            planFile.setEntityCategoryProperty(entityProperty.toString());
-        }
         planFile.setUpdatedAt(new Date());
         return this.baseMapper.update(planFile,new QueryWrapper<PlanFile>().eq("id",id)) == 1;
     }
 
     @Override
-    public Boolean setPlanFileEntityInfo(String id, String entityInfo) {
-        PlanFile planFile = new PlanFile();
-        planFile.setEntityCategoryProperty(entityInfo);
-        planFile.setUpdatedAt(new Date());
-        return this.baseMapper.update(planFile,new QueryWrapper<PlanFile>().eq("id",id)) == 1;
-    }
-
-    @Override
-    public PlanCategoryVo getPlanFileCategoryInfo(String id) {
+    public Boolean setFileBindEntityInfo(String id, FileBindEntityForm form) {
         PlanFile planFile = this.baseMapper.selectOne(new QueryWrapper<PlanFile>().eq("id", id));
-        PlanCategoryVo planCategoryVo = null;
-        if(ObjectUtil.isNull(planFile) || ObjectUtil.isNull(planFile.getEntityCategoryId())){
-            return planCategoryVo;
-        }else{
-            planCategoryVo = this.baseMapper.getPlanFileCategoryInfo(planFile.getEntityCategoryId());
+        try {
+            PlanFile updateFile = new PlanFile();
+            ArrayNode entityToBindIds = mapper.createArrayNode();
+            List<String> categoryIds = form.getCategoryIds();
+            categoryIds.forEach(entityToBindIds::add);
+
+            Iterator<JsonNode> iterator = entityToBindIds.iterator();
+            ObjectNode entityProperty = mapper.createObjectNode();
+            while (iterator.hasNext()) {
+                JsonNode element = iterator.next();
+                String categoryId = element.asText();
+                List<PlanField> planFields = planFieldService.getPlanFields(categoryId);
+                List<String> collectFiledName = planFields.stream().map(PlanField::getName).collect(Collectors.toList());
+                ObjectNode property = mapper.createObjectNode();
+                collectFiledName.forEach(f->{
+                    property.set(f,null);
+                });
+                entityProperty.set(categoryId,property);
+            }
+            if(StringUtils.isNullOrEmpty(planFile.getEntityCategoryId())){
+                //初次绑定主体
+                updateFile.setEntityCategoryId(entityToBindIds.toString());
+                updateFile.setEntityCategoryProperty(entityProperty.toString());
+            }else{
+                ArrayNode entityCatIds = (ArrayNode) mapper.readTree(planFile.getEntityCategoryId());
+                Set<String> catIdSet = StreamSupport.stream(entityCatIds.spliterator(), false)
+                        .map(JsonNode::asText)
+                        .collect(Collectors.toSet());
+                boolean hasCommon = StreamSupport.stream(entityToBindIds.spliterator(), false)
+                        .map(JsonNode::asText)
+                        .anyMatch(catIdSet::contains);
+                if(hasCommon){
+                    throw new KGBusinessException(KgpResultCode.FILE_CATEGORY_BIND_CONFLICT);
+                }
+                entityCatIds.addAll(entityToBindIds);
+                updateFile.setEntityCategoryId(entityCatIds.toString());
+                ObjectNode entityCatProperty =  (ObjectNode) mapper.readTree(planFile.getEntityCategoryProperty());
+                entityCatProperty.setAll(entityProperty);
+                updateFile.setEntityCategoryProperty(entityCatProperty.toString());
+            }
+            updateFile.setUpdatedAt(new Date());
+            return this.baseMapper.update(updateFile,new QueryWrapper<PlanFile>().eq("id",id)) == 1;
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+            throw new KGBusinessException(KgpResultCode.SYSTEM_EXECUTION_ERROR);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new KGBusinessException(KgpResultCode.SYSTEM_EXECUTION_ERROR);
         }
-        return planCategoryVo;
+    }
+    @Override
+    public Boolean setPlanFileEntityInfo(String id, FileEntityForm entityInfo) {
+        PlanFile planFile = this.baseMapper.selectOne(new QueryWrapper<PlanFile>().eq("id", id));
+        try {
+            PlanFile updateFile = new PlanFile();
+            ObjectNode entityCats = (ObjectNode) mapper.readTree(planFile.getEntityCategoryProperty());
+            if(!entityCats.has(entityInfo.getCategoryId())){
+                throw new KGBusinessException(KgpResultCode.FILE_CATEGORY_NOT_FOUND);
+            }else{
+                ObjectNode updateField = (ObjectNode) mapper.readTree(entityInfo.getFields());
+                entityCats.set(entityInfo.getCategoryId(),updateField);
+                updateFile.setEntityCategoryProperty(entityCats.toString());
+                updateFile.setUpdatedAt(new Date());
+                return this.baseMapper.update(updateFile,new QueryWrapper<PlanFile>().eq("id",id)) == 1;
+            }
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+            throw new KGBusinessException(KgpResultCode.SYSTEM_EXECUTION_ERROR);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new KGBusinessException(KgpResultCode.SYSTEM_EXECUTION_ERROR);
+        }
+    }
+
+    @Override
+    public List<PlanCategoryVo> getPlanFileCategoryInfo(String id) {
+        PlanFile planFile = this.baseMapper.selectOne(new QueryWrapper<PlanFile>().eq("id", id));
+        List<PlanCategoryVo> result = new ArrayList();
+        if(ObjectUtil.isNull(planFile) || ObjectUtil.isNull(planFile.getEntityCategoryId())){
+            return result;
+        }else{
+            try {
+                if(StringUtils.isNullOrEmpty(planFile.getEntityCategoryId())){
+                    return result;
+                }
+                ArrayNode EntityCategory = (ArrayNode) mapper.readTree(planFile.getEntityCategoryId());
+                Iterator<JsonNode> iterator = EntityCategory.iterator();
+                while (iterator.hasNext()){
+                    PlanCategoryVo planCategoryVo = this.baseMapper.getPlanFileCategoryInfo(iterator.next().asText());
+                    result.add(planCategoryVo);
+                }
+            } catch (JsonMappingException e) {
+                e.printStackTrace();
+                throw new KGBusinessException(KgpResultCode.SYSTEM_EXECUTION_ERROR);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                throw new KGBusinessException(KgpResultCode.SYSTEM_EXECUTION_ERROR);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -156,6 +228,7 @@ public class PlanFileServiceImpl extends ServiceImpl<PlanFileMapper, PlanFile> i
         result.put("expiresIn",-1);
         return result;
     }
+
 
     @Override
     public Boolean isDirHasFiles(String directoryId) {

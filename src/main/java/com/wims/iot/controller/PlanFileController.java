@@ -4,10 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.wims.iot.common.exception.KGBusinessException;
 import com.wims.iot.common.result.KgpResult;
 import com.wims.iot.model.entity.PlanFile;
+import com.wims.iot.model.form.FileBindEntityForm;
+import com.wims.iot.model.form.FileEntityForm;
 import com.wims.iot.model.vo.PlanCategoryVo;
 import com.wims.iot.service.IPlanFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -51,8 +55,17 @@ public class PlanFileController {
         }
     }
 
+    @PutMapping("/{id}/category/bind")
+    public KgpResult<Boolean> setFileBindEntityInfo(@PathVariable String id,@RequestBody FileBindEntityForm form){
+        try {
+            return KgpResult.judge(planFileService.setFileBindEntityInfo(id,form)) ;
+        } catch (KGBusinessException e){
+            return KgpResult.failed(e.getResultCode());
+        }
+    }
+
     @PutMapping("/{id}/entityAttributes")
-    public KgpResult<Boolean> setPlanFileEntityInfo(@PathVariable String id,@RequestBody String entityInfo){
+    public KgpResult<Boolean> setPlanFileEntityInfo(@PathVariable String id,@RequestBody FileEntityForm entityInfo){
         try {
             return KgpResult.judge(planFileService.setPlanFileEntityInfo(id,entityInfo)) ;
         } catch (KGBusinessException e){
@@ -61,7 +74,7 @@ public class PlanFileController {
     }
 
     @GetMapping("/{id}/entityCategory")
-    public KgpResult<PlanCategoryVo> getPlanFileCategoryInfo(@PathVariable String id){
+    public KgpResult<List<PlanCategoryVo>> getPlanFileCategoryInfo(@PathVariable String id){
         return KgpResult.success(planFileService.getPlanFileCategoryInfo(id)) ;
     }
 

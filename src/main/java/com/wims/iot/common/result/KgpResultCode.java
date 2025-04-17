@@ -30,6 +30,10 @@ public enum KgpResultCode implements IResultCode, Serializable  {
 
     CATEGORY_IN_USE("CATEGORY_IN_USE","该类别已被预案文件关联，无法删除。如需强制删除请设置 force=true"),
 
+    FILE_CATEGORY_BIND_CONFLICT("FILE_CATEGORY_BIND_CONFLICT","不可重复添加已经关联的主体"),
+
+    FILE_CATEGORY_NOT_FOUND("FILE_CATEGORY_NOT_FOUND","该文件并为未关联此主体"),
+
     UPDATE_EXE_STATUS_ERROR("UPDATE_EXE_STATUS_ERROR","更新执行实例的状态失败"),
 
     EVA_RECORD_CONFLICT("EVA_RECORD_CONFLICT","当前执行实例已生成评估报告，请打分"),

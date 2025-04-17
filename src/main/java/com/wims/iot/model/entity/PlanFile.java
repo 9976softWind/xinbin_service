@@ -77,7 +77,7 @@ public class PlanFile implements Serializable {
     private String applicableArea;
 
     /**
-     * 文件关联的预案主体类别Id（t_plan_category的category_id字段）
+     * 文件关联的预案主体类别Id（一对多t_plan_category的category_id字段）
      */
     private String entityCategoryId;
 
