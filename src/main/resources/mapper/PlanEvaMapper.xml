@@ -110,5 +110,10 @@
                 left join t_plan_eva_continuous tcontinuous on tcontinuous.continuous_id = eva.continuous_id
                 left join t_plan_eva_effect teffect on teffect.effect_id = eva.effect_id
                 left join t_plan_eva_risk trisk on trisk.risk_id = eva.risk_id
+        <where>
+            <if test="executionId != null">
+                and eva.exe_id = #{executionId}
+            </if>
+        </where>
     </select>
 </mapper>
