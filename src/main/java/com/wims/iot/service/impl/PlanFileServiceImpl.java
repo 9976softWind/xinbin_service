@@ -22,6 +22,7 @@ import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.model.form.FileBindEntityForm;
 import com.wims.iot.model.form.FileEntityForm;
 import com.wims.iot.model.form.PlanFileAddForm;
+import com.wims.iot.model.form.PlanFileSetForm;
 import com.wims.iot.model.query.PlanDirectoryFileQuery;
 import com.wims.iot.model.query.PlanFileQuery;
 import com.wims.iot.model.vo.PlanCategoryVo;
@@ -187,6 +188,36 @@ public class PlanFileServiceImpl extends ServiceImpl<PlanFileMapper, PlanFile> i
             }
         }
         return true;
+    }
+
+    @Override
+    public Boolean setPlanFileIntoDic(String id, PlanFileSetForm form) {
+        PlanFile planFile = new PlanFile();
+        planFile.setDirectoryId(form.getDirectoryId());
+        planFile.setDescription(form.getDescription());
+        planFile.setPreplanPriority(form.getPreplanPriority());
+        planFile.setDisasterType(form.getDisasterType());
+        planFile.setApplicableArea(form.getApplicableArea());
+        ArrayNode categoryIds = mapper.createArrayNode();
+        ObjectNode categoryProperty = mapper.createObjectNode();
+        List<PlanFileSetForm.AttributeDTO> attributes = form.getAttributes();
+        attributes.forEach(attributeDTO -> {
+            String categoryId = attributeDTO.getCategoryId();
+            Map<String, String> fields = attributeDTO.getFields();
+            categoryIds.add(categoryId);
+            ObjectNode property = mapper.createObjectNode();
+            for (Map.Entry<String, String> entry : fields.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                property.put(key,value);
+            }
+            categoryProperty.set(categoryId,property);
+
+        });
+        planFile.setEntityCategoryId(categoryIds.toString());
+        planFile.setEntityCategoryProperty(categoryProperty.toString());
+        planFile.setUpdatedAt(new Date());
+        return this.baseMapper.update(planFile,new QueryWrapper<PlanFile>().eq("id",id)) == 1;
     }
 
     @Override

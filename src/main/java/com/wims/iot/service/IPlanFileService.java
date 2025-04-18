@@ -7,6 +7,7 @@ import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.model.form.FileBindEntityForm;
 import com.wims.iot.model.form.FileEntityForm;
 import com.wims.iot.model.form.PlanFileAddForm;
+import com.wims.iot.model.form.PlanFileSetForm;
 import com.wims.iot.model.query.PlanDirectoryFileQuery;
 import com.wims.iot.model.query.PlanFileQuery;
 import com.wims.iot.model.vo.PlanCategoryVo;
@@ -62,4 +63,6 @@ public interface IPlanFileService extends IService<PlanFile> {
     Boolean setFileBindEntityInfo(String id, FileBindEntityForm form);
 
     Boolean addPlanFileIntoDic(PlanFileAddForm planFileAddForm);
+
+    Boolean setPlanFileIntoDic(String id, PlanFileSetForm form);
 }
