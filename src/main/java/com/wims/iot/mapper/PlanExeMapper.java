@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wims.iot.model.entity.PlanExe;
 import com.wims.iot.model.query.PlanFileExeFeedBackQuery;
-import com.wims.iot.model.vo.PlanFileExeFeedBackVo;
+import com.wims.iot.model.vo.PlanFileExeFeedEvaVo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -18,6 +18,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface PlanExeMapper extends BaseMapper<PlanExe> {
 
-    Page<PlanFileExeFeedBackVo> getPlanFileExeFeedBackList(Page<PlanFileExeFeedBackVo> page, PlanFileExeFeedBackQuery query);
+    Page<PlanFileExeFeedEvaVo> getPlanFileExeFeedBackList(Page<PlanFileExeFeedEvaVo> page, PlanFileExeFeedBackQuery query);
 
 }

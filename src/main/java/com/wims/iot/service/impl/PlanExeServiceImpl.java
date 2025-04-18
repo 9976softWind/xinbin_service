@@ -13,7 +13,7 @@ import com.wims.iot.model.entity.ColFile;
 import com.wims.iot.model.entity.PlanExe;
 import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.model.query.PlanFileExeFeedBackQuery;
-import com.wims.iot.model.vo.PlanFileExeFeedBackVo;
+import com.wims.iot.model.vo.PlanFileExeFeedEvaVo;
 import com.wims.iot.service.IColFileService;
 import com.wims.iot.service.IPlanExeService;
 import com.wims.iot.service.IPlanFileService;
@@ -58,8 +58,8 @@ public class PlanExeServiceImpl extends ServiceImpl<PlanExeMapper, PlanExe> impl
     }
 
     @Override
-    public IPage<PlanFileExeFeedBackVo> getPlanFileExeFeedBackList(PlanFileExeFeedBackQuery query) {
-        Page<PlanFileExeFeedBackVo> page = new Page<>(query.getPage(), query.getPageSize());
+    public IPage<PlanFileExeFeedEvaVo> getPlanFileExeFeedBackList(PlanFileExeFeedBackQuery query) {
+        Page<PlanFileExeFeedEvaVo> page = new Page<>(query.getPage(), query.getPageSize());
         this.baseMapper.getPlanFileExeFeedBackList(page,query);
         return page;
     }

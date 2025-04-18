@@ -5,7 +5,7 @@ import com.wims.iot.common.exception.KGBusinessException;
 import com.wims.iot.common.result.KgPageResult;
 import com.wims.iot.common.result.KgpResult;
 import com.wims.iot.model.query.PlanFileExeFeedBackQuery;
-import com.wims.iot.model.vo.PlanFileExeFeedBackVo;
+import com.wims.iot.model.vo.PlanFileExeFeedEvaVo;
 import com.wims.iot.service.IPlanExeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,12 +36,12 @@ public class PlanExeController {
      * @return
      */
     @GetMapping
-    public KgPageResult<PlanFileExeFeedBackVo> getPlanExeList(@RequestParam(value = "planFileId",required = false) String planFileId,
-                                                              @RequestParam(value = "status",required = false) String status,
-                                                              @RequestParam(value = "startTime",required = false) String startTime,
-                                                              @RequestParam(value = "endTime",required = false) String endTime,
-                                                              @RequestParam(value = "page",required = true) Integer page,
-                                                              @RequestParam(value = "pageSize",required = true) Integer pageSize){
+    public KgPageResult<PlanFileExeFeedEvaVo> getPlanExeList(@RequestParam(value = "planFileId",required = false) String planFileId,
+                                                             @RequestParam(value = "status",required = false) String status,
+                                                             @RequestParam(value = "startTime",required = false) String startTime,
+                                                             @RequestParam(value = "endTime",required = false) String endTime,
+                                                             @RequestParam(value = "page",required = true) Integer page,
+                                                             @RequestParam(value = "pageSize",required = true) Integer pageSize){
         PlanFileExeFeedBackQuery query = new PlanFileExeFeedBackQuery();
         query.setPlanFileId(planFileId);
         query.setStatus(status);
@@ -49,7 +49,7 @@ public class PlanExeController {
         query.setEndTime(endTime);
         query.setPage(page);
         query.setPageSize(pageSize);
-        IPage<PlanFileExeFeedBackVo> result = planExeService.getPlanFileExeFeedBackList(query);
+        IPage<PlanFileExeFeedEvaVo> result = planExeService.getPlanFileExeFeedBackList(query);
         return KgPageResult.success(result);
     }
 
