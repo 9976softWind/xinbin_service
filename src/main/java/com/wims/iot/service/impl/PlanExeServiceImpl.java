@@ -15,10 +15,12 @@ import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.model.query.PlanFileExeFeedBackQuery;
 import com.wims.iot.model.vo.PlanFileExeFeedEvaVo;
 import com.wims.iot.service.IColFileService;
+import com.wims.iot.service.IPlanEvaService;
 import com.wims.iot.service.IPlanExeService;
 import com.wims.iot.service.IPlanFileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -38,6 +40,9 @@ public class PlanExeServiceImpl extends ServiceImpl<PlanExeMapper, PlanExe> impl
 
     @Autowired
     IColFileService colFileService;
+
+    @Autowired
+    IPlanEvaService planEvaService;
 
     @Override
     public Boolean updateStatus(String executionId, String exeStatus) {
@@ -65,6 +70,7 @@ public class PlanExeServiceImpl extends ServiceImpl<PlanExeMapper, PlanExe> impl
     }
 
     @Override
+    @Transactional
     public Boolean planFileExec(String planFileId, String executor) {
         PlanFile planFileById = planFileService.getPlanFileById(planFileId);
         ColFile colFileById = colFileService.getColFileById(planFileById.getFileId());
@@ -75,7 +81,7 @@ public class PlanExeServiceImpl extends ServiceImpl<PlanExeMapper, PlanExe> impl
         planExe.setPlanFileName(StringUtils.isNullOrEmpty(colFileById.getFilename()) ? null : colFileById.getFilename());
         planExe.setStartTime(new Date());
         if(this.baseMapper.insert(planExe) == 1){
-            return true;
+            return planEvaService.addPlanFileEva(planExe.getId());
         }else{
             throw new KGBusinessException(KgpResultCode.SYSTEM_EXECUTION_ERROR);
         }

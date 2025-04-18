@@ -39,22 +39,6 @@ public class PlanEvaController {
     }
 
     /**
-     * 生成评估报告
-     * @param executionId   要生成评估报告的执行实例 ID
-     * @return
-     */
-    @PostMapping("/{executionId}")
-    public KgpResult<Boolean> addPlanFileEva(@PathVariable String executionId){
-
-        try {
-            return KgpResult.judge(planEvaService.addPlanFileEva(executionId));
-        } catch (KGBusinessException e){
-            return KgpResult.failed(e.getResultCode());
-        }
-
-    }
-
-    /**
      * 提交评估结果
      * @param executionId
      * @param evaData
