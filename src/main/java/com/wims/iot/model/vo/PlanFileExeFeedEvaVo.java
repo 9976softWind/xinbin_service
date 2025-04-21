@@ -15,11 +15,11 @@ import java.util.List;
 @Data
 public class PlanFileExeFeedEvaVo {
 
-    private String id;
-
-    private PlanFile planFile;
+    private String vId;
 
     private PlanExe planExe;
+
+    private PlanFile planFile;
 
     private List<PlanFeedback> feedbackList;
 

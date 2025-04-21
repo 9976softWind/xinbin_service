@@ -15,8 +15,17 @@
     </resultMap>
 
     <resultMap id="PlanFileExeFeedBackResuleMap" type="com.wims.iot.model.vo.PlanFileExeFeedEvaVo">
-
-        <id property="id" column="tpf_id"/>
+        <id property="vId" column="tpe_id"/>
+        <association property="planExe" javaType="com.wims.iot.model.entity.PlanExe">
+            <id property="id" column="tpe_id"/>
+            <result property="planFileId" column="tpe_plan_file_id"/>
+            <result property="planFileName" column="tpe_plan_file_name"/>
+            <result property="status" column="tpe_status"/>
+            <result property="executor" column="tpe_executor"/>
+            <result property="startTime" column="tpe_start_time"/>
+            <result property="endTime" column="tpe_end_time"/>
+            <result property="lastFeedBackTime" column="tpe_last_feed_back_time"/>
+        </association>
         <!-- 一对一关联对象 -->
         <association property="planFile" javaType="com.wims.iot.model.entity.PlanFile">
             <id property="id" column="tpf_id"/>
@@ -32,42 +41,28 @@
             <result property="createdAt" column="tpf_created_at"/>
             <result property="updatedAt" column="tpf_updated_at"/>
         </association>
+<!--        <association property="planEva" javaType="com.wims.iot.model.entity.PlanEva">-->
+<!--            <id property="id" column="eva_id"/>-->
+<!--            <result property="exeId" column="eva_exe_id"/>-->
+<!--            <result property="completenessId" column="eva_completeness_id"/>-->
+<!--            <result property="continuousId" column="eva_continuous_id"/>-->
+<!--            <result property="effectId" column="eva_effect_id"/>-->
+<!--            <result property="riskId" column="eva_risk_id"/>-->
+<!--            <result property="totalPoints" column="eva_total_points"/>-->
+<!--            <result property="comments" column="eva_comments"/>-->
+<!--            <result property="evaluator" column="eva_evaluator"/>-->
+<!--            <result property="evaluatedAt" column="eva_evaluated_at"/>-->
+<!--        </association>-->
 
-        <!-- 一对一关联对象 -->
-        <association property="planExe" javaType="com.wims.iot.model.entity.PlanExe">
-            <id property="planFileId" column="tpe_plan_file_id"/>
-            <result property="id" column="tpe_id"/>
-            <result property="planFileName" column="tpe_plan_file_name"/>
-            <result property="status" column="tpe_status"/>
-            <result property="executor" column="tpe_executor"/>
-            <result property="startTime" column="tpe_start_time"/>
-            <result property="endTime" column="tpe_end_time"/>
-            <result property="lastFeedBackTime" column="tpe_last_feed_back_time"/>
-        </association>
-
-        <association property="planEva" javaType="com.wims.iot.model.entity.PlanEva">
-            <id property="id" column="eva_id"/>
-            <result property="exeId" column="eva_exe_id"/>
-            <result property="completenessId" column="eva_completeness_id"/>
-            <result property="continuousId" column="eva_continuous_id"/>
-            <result property="effectId" column="eva_effect_id"/>
-            <result property="riskId" column="eva_risk_id"/>
-            <result property="totalPoints" column="eva_total_points"/>
-            <result property="comments" column="eva_comments"/>
-            <result property="evaluator" column="eva_evaluator"/>
-            <result property="evaluatedAt" column="eva_evaluated_at"/>
-        </association>
-
-        <!-- 一对多关联集合 -->
-        <collection property="feedbackList" ofType="com.wims.iot.model.entity.PlanFeedback">
-            <id property="id" column="tpb_id"/>
-            <result property="exeId" column="tpb_exe_id"/>
-            <result property="feedType" column="tpb_feed_type"/>
-            <result property="content" column="tpb_content"/>
-            <result property="exeStatus" column="tpb_exe_status"/>
-            <result property="releatedFileIds" column="tpb_releated_file_ids"/>
-            <result property="feedBackTime" column="tpb_feed_back_time"/>
-        </collection>
+<!--        <collection property="feedbackList" ofType="com.wims.iot.model.entity.PlanFeedback">-->
+<!--            <id property="id" column="tpb_id"/>-->
+<!--            <result property="exeId" column="tpb_exe_id"/>-->
+<!--            <result property="feedType" column="tpb_feed_type"/>-->
+<!--            <result property="content" column="tpb_content"/>-->
+<!--            <result property="exeStatus" column="tpb_exe_status"/>-->
+<!--            <result property="releatedFileIds" column="tpb_releated_file_ids"/>-->
+<!--            <result property="feedBackTime" column="tpb_feed_back_time"/>-->
+<!--        </collection>-->
 
     </resultMap>
 
@@ -75,50 +70,31 @@
     <sql id="Base_Column_List">
         id, plan_file_id, plan_file_name, status, executor, start_time, end_time, last_feed_back_time
     </sql>
-
-    <select id="getPlanFileExeFeedBackList" resultMap="PlanFileExeFeedBackResuleMap">
+    <select id="getPlanFileExeFeedBackList" resultMap="PlanFileExeFeedBackResuleMap" parameterType="com.wims.iot.model.query.PlanFileExeFeedBackQuery">
         select
-            tpf.id AS tpf_id,
-            tpf.name AS tpf_name,
-            tpf.file_id AS tpf_file_id,
-            tpf.directory_id AS tpf_directory_id,
-            tpf.description AS tpf_description,
-            tpf.preplan_priority AS tpf_preplan_priority,
-            tpf.disaster_type AS tpf_disaster_type,
-            tpf.applicable_area AS tpf_applicable_area,
-            tpf.entity_category_id AS tpf_entity_category_id,
-            tpf.entity_category_property AS tpf_entity_category_property,
-            tpf.created_at AS tpf_created_at,
-            tpf.updated_at AS tpf_updated_at,
-            tpe.id AS tpe_id,
-            tpe.plan_file_id AS tpe_plan_file_id,
-            tpe.plan_file_name AS tpe_plan_file_name,
-            tpe.status AS tpe_status,
-            tpe.executor AS tpe_executor,
-            tpe.start_time AS tpe_start_time,
-            tpe.end_time AS tpe_end_time,
-            tpe.last_feed_back_time AS tpe_last_feed_back_time,
-            eva.id AS eva_id,
-            eva.exe_id AS eva_exe_id,
-            eva.completeness_id AS eva_completeness_id,
-            eva.continuous_id AS eva_continuous_id,
-            eva.effect_id AS eva_effect_id,
-            eva.risk_id AS eva_risk_id,
-            eva.total_points AS eva_total_points,
-            eva.comments AS eva_comments,
-            eva.evaluator AS eva_evaluator,
-            eva.evaluated_at AS eva_evaluated_at,
-            tpb.id AS tpb_id,
-            tpb.exe_id AS tpb_exe_id,
-            tpb.feed_type AS tpb_feed_type,
-            tpb.content AS tpb_content,
-            tpb.exe_status AS tpb_exe_status,
-            tpb.releated_file_ids AS tpb_releated_file_ids,
-            tpb.feed_back_time AS tpb_feed_back_time
-        FROM t_plan_file tpf
-            LEFT JOIN t_plan_exe tpe  ON tpf.id = tpe.plan_file_id
-            LEFT JOIN t_plan_eva eva ON eva.exe_id = tpe.id
-            LEFT JOIN t_plan_feedback tpb ON tpe.id = tpb.exe_id
+        tpe.id as tpe_id,
+        tpe.plan_file_id as tpe_plan_file_id,
+        tpe.plan_file_name as tpe_plan_file_name,
+        tpe.status as tpe_status,
+        tpe.executor as tpe_executor,
+        tpe.start_time as tpe_start_time,
+        tpe.end_time as tpe_end_time,
+        tpe.last_feed_back_time as tpe_last_feed_back_time,
+        tpf.id as tpf_id,
+        tpf.name as tpf_name,
+        tpf.file_id as tpf_file_id,
+        tpf.directory_id as tpf_directory_id,
+        tpf.description as tpf_description,
+        tpf.preplan_priority as tpf_preplan_priority,
+        tpf.disaster_type as tpf_disaster_type,
+        tpf.applicable_area as tpf_applicable_area,
+        tpf.entity_category_id as tpf_entity_category_id,
+        tpf.entity_category_property as tpf_entity_category_property,
+        tpf.created_at as tpf_created_at,
+        tpf.updated_at as tpf_updated_at
+        from
+        t_plan_exe tpe
+            LEFT JOIN t_plan_file tpf on tpe.plan_file_id = tpf.id
         <where>
             <if test="query.planFileId != null">
                 and tpf.id = #{query.planFileId}
@@ -134,4 +110,63 @@
             </if>
         </where>
     </select>
+<!--    <select id="getPlanFileExeFeedBackList" resultMap="PlanFileExeFeedBackResuleMap" parameterType="com.wims.iot.model.query.PlanFileExeFeedBackQuery">-->
+<!--        select-->
+<!--            tpe.id as tpe_id,-->
+<!--            tpe.plan_file_id as tpe_plan_file_id,-->
+<!--            tpe.plan_file_name as tpe_plan_file_name,-->
+<!--            tpe.status as tpe_status,-->
+<!--            tpe.executor as tpe_executor,-->
+<!--            tpe.start_time as tpe_start_time,-->
+<!--            tpe.end_time as tpe_end_time,-->
+<!--            tpe.last_feed_back_time as tpe_last_feed_back_time,-->
+<!--            tpf.id as tpf_id,-->
+<!--            tpf.name as tpf_name,-->
+<!--            tpf.file_id as tpf_file_id,-->
+<!--            tpf.directory_id as tpf_directory_id,-->
+<!--            tpf.description as tpf_description,-->
+<!--            tpf.preplan_priority as tpf_preplan_priority,-->
+<!--            tpf.disaster_type as tpf_disaster_type,-->
+<!--            tpf.applicable_area as tpf_applicable_area,-->
+<!--            tpf.entity_category_id as tpf_entity_category_id,-->
+<!--            tpf.entity_category_property as tpf_entity_category_property,-->
+<!--            tpf.created_at as tpf_created_at,-->
+<!--            tpf.updated_at as tpf_updated_at,-->
+<!--            eva.id AS eva_id,-->
+<!--            eva.exe_id AS eva_exe_id,-->
+<!--            eva.completeness_id AS eva_completeness_id,-->
+<!--            eva.continuous_id AS eva_continuous_id,-->
+<!--            eva.effect_id AS eva_effect_id,-->
+<!--            eva.risk_id AS eva_risk_id,-->
+<!--            eva.total_points AS eva_total_points,-->
+<!--            eva.comments AS eva_comments,-->
+<!--            eva.evaluator AS eva_evaluator,-->
+<!--            eva.evaluated_at AS eva_evaluated_at,-->
+<!--            tpb.id AS tpb_id,-->
+<!--            tpb.exe_id AS tpb_exe_id,-->
+<!--            tpb.feed_type AS tpb_feed_type,-->
+<!--            tpb.content AS tpb_content,-->
+<!--            tpb.exe_status AS tpb_exe_status,-->
+<!--            tpb.releated_file_ids AS tpb_releated_file_ids,-->
+<!--            tpb.feed_back_time AS tpb_feed_back_time-->
+<!--        from-->
+<!--        t_plan_exe tpe-->
+<!--        LEFT JOIN t_plan_file tpf on tpe.plan_file_id = tpf.id-->
+<!--        LEFT JOIN t_plan_eva eva ON eva.exe_id = tpe.id-->
+<!--        LEFT JOIN t_plan_feedback tpb ON tpb.exe_id = tpe.id-->
+<!--        <where>-->
+<!--            <if test="query.planFileId != null">-->
+<!--                and tpf.id = #{query.planFileId}-->
+<!--            </if>-->
+<!--            <if test="query.startTime != null">-->
+<!--                and tpf.created_at &gt;= #{query.startTime}-->
+<!--            </if>-->
+<!--            <if test="query.endTime != null">-->
+<!--                and tpf.created_at &lt;= #{query.endTime}-->
+<!--            </if>-->
+<!--            <if test="query.status != null">-->
+<!--                and tpe.status = #{query.status}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
 </mapper>

@@ -70,6 +70,11 @@ public class PlanEvaServiceImpl extends ServiceImpl<PlanEvaMapper, PlanEva> impl
     }
 
     @Override
+    public PlanEva getPlanFileEvaById(String executionId) {
+        return this.baseMapper.selectOne(new QueryWrapper<PlanEva>().eq("exe_id", executionId));
+    }
+
+    @Override
     @Transactional
     public Boolean setPlanFileEva(String executionId, EvaDataForm evaData) {
         PlanEva planEva = this.baseMapper.selectOne(new QueryWrapper<PlanEva>().eq("exe_id", executionId));

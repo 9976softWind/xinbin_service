@@ -9,20 +9,20 @@ import com.wims.iot.common.exception.KGBusinessException;
 import com.wims.iot.common.result.KgpResultCode;
 import com.wims.iot.common.util.RandomStringGenerator;
 import com.wims.iot.mapper.PlanExeMapper;
+import com.wims.iot.mapper.PlanFeedbackMapper;
 import com.wims.iot.model.entity.ColFile;
 import com.wims.iot.model.entity.PlanExe;
+import com.wims.iot.model.entity.PlanFeedback;
 import com.wims.iot.model.entity.PlanFile;
 import com.wims.iot.model.query.PlanFileExeFeedBackQuery;
 import com.wims.iot.model.vo.PlanFileExeFeedEvaVo;
-import com.wims.iot.service.IColFileService;
-import com.wims.iot.service.IPlanEvaService;
-import com.wims.iot.service.IPlanExeService;
-import com.wims.iot.service.IPlanFileService;
+import com.wims.iot.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -43,6 +43,9 @@ public class PlanExeServiceImpl extends ServiceImpl<PlanExeMapper, PlanExe> impl
 
     @Autowired
     IPlanEvaService planEvaService;
+
+    @Autowired
+    PlanFeedbackMapper planFeedbackMapper;
 
     @Override
     public Boolean updateStatus(String executionId, String exeStatus) {
@@ -66,6 +69,12 @@ public class PlanExeServiceImpl extends ServiceImpl<PlanExeMapper, PlanExe> impl
     public IPage<PlanFileExeFeedEvaVo> getPlanFileExeFeedBackList(PlanFileExeFeedBackQuery query) {
         Page<PlanFileExeFeedEvaVo> page = new Page<>(query.getPage(), query.getPageSize());
         this.baseMapper.getPlanFileExeFeedBackList(page,query);
+        List<PlanFileExeFeedEvaVo> records = page.getRecords();
+        records.forEach(record->{
+            String exeId = record.getVId();
+            record.setPlanEva(planEvaService.getPlanFileEvaById(exeId));
+            record.setFeedbackList(planFeedbackMapper.selectList(new QueryWrapper<PlanFeedback>().eq("exe_id",exeId)));
+        });
         return page;
     }
 

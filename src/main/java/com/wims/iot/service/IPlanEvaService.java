@@ -19,5 +19,7 @@ public interface IPlanEvaService extends IService<PlanEva> {
 
     PlanEvaVo getPlanFileEva(String executionId);
 
+    PlanEva getPlanFileEvaById(String executionId);
+
     Boolean setPlanFileEva(String executionId, EvaDataForm evaData);
 }
